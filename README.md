@@ -11,7 +11,7 @@ This project illustrates how our team endeavoured to build a classification mode
 The dataset used in this project was an amalgamation of two datasets related to wine from the northern region of Portugal: specifically, Vinho Verde red and white samples. Each row represents a wine sample with 11 different features including pH, residual sugar, density etc. The datasets were distinguished by being either for red or white wines. It was created by Paulo Cortez, A. Cerdeira, F. Almeida, T. Matos, and J. Reis and can be sourced from the UC Irvine Machine Learning Repository [here](https://archive.ics.uci.edu/dataset/186/wine+quality).
 
 ## Report
-The final report can be found [here](notebooks/wine_classifier.html).
+The final report can be found [here](reports/wine_classifier.pdf).
 
 ## Dependencies
 * `conda` (version 23.9.1 or higher)
