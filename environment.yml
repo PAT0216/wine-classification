@@ -23,3 +23,5 @@ dependencies:
   - lightgbm=4.6.0
   - watchfiles=1.1.1
   - pip=25.3
+  - pandera=0.26.1
+  - deepchecks=0.3.2
