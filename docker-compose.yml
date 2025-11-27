@@ -10,4 +10,6 @@ services:
       resources:
         limits:
           memory: 5G  
-    platform: linux/amd64/v8
+    platform: 
+      - linux/amd64
+      - linux/arm64
