@@ -1,9 +1,11 @@
 services:
-  # run jupyter notebook inside jupyter 
   jupyter-notebook:
-    image:  beardw/wine-classification:fc640d8
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: beardw/wine-classification:fc640d8
     ports:
-      - "8888:8888"
+      - "8989:8888"
     volumes:
       - .:/home/jovyan
     deploy:
