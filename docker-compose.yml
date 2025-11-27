@@ -11,5 +11,5 @@ services:
     deploy:
       resources:
         limits:
-          memory: 5G
+          memory: 5G  
     platform: linux/amd64
