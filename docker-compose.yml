@@ -9,5 +9,5 @@ services:
     deploy:
       resources:
         limits:
-          memory: 5G
- #   platform: linux/amd64
+          memory: 5G  
+    platform: linux/amd64/v8
