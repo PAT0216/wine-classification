@@ -1,7 +1,7 @@
 services:
   # run jupyter notebook inside jupyter 
   jupyter-notebook:
-    image:  beardw/wine-classification:5a93312
+    image:  beardw/wine-classification:ef5402c
     ports:
       - "8888:8888"
     volumes:
