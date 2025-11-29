@@ -14,25 +14,29 @@ The dataset used in this project was an amalgamation of two datasets related to 
 The final report can be found [here](reports/wine_classifier.pdf).
 
 ## Dependencies
-* `conda` (version 23.9.1 or higher)
-* `conda-lock` (version 2.5.7 or higher)
-* `jupyterlab` (version 4.4.7 or higher)
-* `nb_conda_kernels` (version 2.5.1 or higher)
-* Python and the packages listed in [environment.yml](environment.yml)
+* [Docker](https://www.docker.com/)
+* Workspace - Possible options: [Jupyter](https://jupyter.org/) and [Visual Studio Code](https://code.visualstudio.com/download)
+* If using VS Code - [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)
 
 ## Usage
-When running the project for the first time, please run the following from the root of this repository:
-```
-conda-lock install --name wine-classifier conda-lock.yml
-```
-To run the analysis, please run the following from the root of this repository:
-```
-jupyter lab
-```
-Open `wine-classifier.ipynb` in JupyterLab.
-Under Switch/Select Kernel choose "Python [conda env:wine-classifier]".
+### Setup
+1. Ensure that Docker Desktop is running. (This is for Windows or Mac computers.)
+2. Clone this GitHub repository to a directory of your choice.
 
-Lastly, under the "Kernel" menu click "Restart Kernel and Run All Cells...".
+### Running the analysis
+1. To begin running this report, navigate to the root directory of this project.
+2. Enter the following command in your terminal.
+```
+docker compose up
+```
+3. Several lines will appear. Find the line that begins with `http://127.0.0.1:8888/lab?token=`.
+4. Copy and paste the entire line into a browser of your choice.
+5. The notebook will load and be accessible.
+
+### Clean up
+Once the container is no longer needed, it can be shut down.
+1. Use `Ctrl` + `C` to stop in the terminal.
+2. Type `docker compose rm` to shut down and clean up the resources used by the container.
 
 ## License
 The Wine Classification report, code, and additional documentation within this repository are licensed under the MIT license.
