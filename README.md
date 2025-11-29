@@ -30,7 +30,7 @@ The final report can be found [here](reports/wine_classifier.pdf).
 docker compose up
 ```
 3. Several lines will appear. Find the line that begins with `http://127.0.0.1:8888/lab?token=`.
-   <img src="imgs/container-launch-url.png" width=400>
+   <img src="imgs/container-launch-url.png" width=800>
 5. Copy and paste the entire line into a browser of your choice.
 6. The notebook will load and be accessible.
 7. Navigate to `notebooks/wine_classifier.ipynb`.
