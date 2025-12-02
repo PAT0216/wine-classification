@@ -5,11 +5,11 @@ services:
       dockerfile: Dockerfile
     image: beardw/wine-classification:fc640d8
     ports:
-      - "8989:8888"
+      - "8888:8888"
     volumes:
       - .:/home/jovyan
     deploy:
       resources:
         limits:
-          memory: 5G  
-    platform: linux/amd64
+          memory: 5G
+    # platform: linux/amd64

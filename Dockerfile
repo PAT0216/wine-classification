@@ -1,9 +1,8 @@
 FROM quay.io/jupyter/minimal-notebook:afe30f0c9ad8
 
-COPY conda-linux-64.lock /tmp/conda-linux-64.lock
+COPY environment.yml /tmp/environment.yml
 
-RUN conda update --quiet --file /tmp/conda-linux-64.lock \
+RUN conda env update -n base --quiet --file /tmp/environment.yml \
     && conda clean --all -y -f \
-    && pip install "deepchecks[tabular]==0.19.1" \
     && fix-permissions "${CONDA_DIR}" \
     && fix-permissions "/home/${NB_USER}"
