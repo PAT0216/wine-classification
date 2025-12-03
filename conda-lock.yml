@@ -13,7 +13,7 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: 98f75b07f9ce9e510100b6f347744fdc739441f741260313fde0fcd9b68a51f2
+    linux-64: 33473ae04638aad8a89b389260f1b89213e3c4acf599b42963cd31e9c0b31d8c
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -963,14 +963,14 @@ package:
   category: main
   optional: false
 - name: esbuild
-  version: 0.27.0
+  version: 0.27.1
   manager: conda
   platform: linux-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/linux-64/esbuild-0.27.0-hfc2019e_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/esbuild-0.27.1-hfc2019e_0.conda
   hash:
-    md5: fc6322bea72892590d4c975187575464
-    sha256: ed48a39e1d049db7286c097360e0ad8a8aedc966537c297e310952f3f3f9a2e7
+    md5: c78df6fd817dd0b14bf23321a795d918
+    sha256: 2dc77d9fe728de382dc5086d5db2a00d1fda689b274c318500c8892b9f413234
   category: main
   optional: false
 - name: exceptiongroup
@@ -2820,7 +2820,7 @@ package:
   category: main
   optional: false
 - name: libxkbcommon
-  version: 1.13.0
+  version: 1.13.1
   manager: conda
   platform: linux-64
   dependencies:
@@ -2832,10 +2832,10 @@ package:
     libxml2-16: '>=2.14.6'
     xkeyboard-config: ''
     xorg-libxau: '>=1.0.12,<2.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libxkbcommon-1.13.0-hca5e8e5_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/libxkbcommon-1.13.1-hca5e8e5_0.conda
   hash:
-    md5: aa65b4add9574bb1d23c76560c5efd4c
-    sha256: 576ce5378cc6a2b722ff33d2359ccb74dea1e6465daa45116e57550f1eb4ba7e
+    md5: 2bca1fbb221d9c3c8e3a155784bbc2e9
+    sha256: d2195b5fbcb0af1ff7b345efdf89290c279b8d1d74f325ae0ac98148c375863c
   category: main
   optional: false
 - name: libxml2
@@ -4365,6 +4365,20 @@ package:
   hash:
     md5: 9c96c9876ba45368a03056ddd0f20431
     sha256: a2f837780af450d633efc052219c31378bcad31356766663fb88a99e8e4c817b
+  category: main
+  optional: false
+- name: ucimlrepo
+  version: 0.0.7
+  manager: conda
+  platform: linux-64
+  dependencies:
+    certifi: '>=2020.12.5'
+    pandas: '>=1.0.0'
+    python: '>=3.9'
+  url: https://conda.anaconda.org/conda-forge/noarch/ucimlrepo-0.0.7-pyhd8ed1ab_1.conda
+  hash:
+    md5: 4a93353fb5cf32875e79a632ca3fe905
+    sha256: cc3595c8e8812b20fd75a905ccb8e3a748c94964dca046fbdce6c2df865ead82
   category: main
   optional: false
 - name: unicodedata2
