@@ -8,4 +8,5 @@ RUN conda update --quiet --file /tmp/conda-linux-64.lock \
 && fix-permissions "/home/${NB_USER}"
 
 RUN pip install deepchecks==0.19.1
+
 RUN pip install ucimlrepo==0.0.7

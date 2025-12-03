@@ -13,7 +13,7 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: 33473ae04638aad8a89b389260f1b89213e3c4acf599b42963cd31e9c0b31d8c
+    linux-64: 98f75b07f9ce9e510100b6f347744fdc739441f741260313fde0fcd9b68a51f2
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -4365,20 +4365,6 @@ package:
   hash:
     md5: 9c96c9876ba45368a03056ddd0f20431
     sha256: a2f837780af450d633efc052219c31378bcad31356766663fb88a99e8e4c817b
-  category: main
-  optional: false
-- name: ucimlrepo
-  version: 0.0.7
-  manager: conda
-  platform: linux-64
-  dependencies:
-    certifi: '>=2020.12.5'
-    pandas: '>=1.0.0'
-    python: '>=3.9'
-  url: https://conda.anaconda.org/conda-forge/noarch/ucimlrepo-0.0.7-pyhd8ed1ab_1.conda
-  hash:
-    md5: 4a93353fb5cf32875e79a632ca3fe905
-    sha256: cc3595c8e8812b20fd75a905ccb8e3a748c94964dca046fbdce6c2df865ead82
   category: main
   optional: false
 - name: unicodedata2
