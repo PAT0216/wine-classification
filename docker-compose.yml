@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: beardw/wine-classification:fc640d8
+    image: beardw/wine-classification:b102d5e
     ports:
       - "8989:8888"
     volumes:
