@@ -7,14 +7,13 @@ import pandas as pd
 from ucimlrepo import fetch_ucirepo 
 
 @click.command()
-@click.option('--pwd', type=str, 
+@click.option('--path', type=str, 
               help="Path to directory where raw data will be written to", default='~/data/raw')
-def main(pwd):
-    """downloads data to data/raw"""
-    export_path = pwd + "/wine-raw.csv"
-    print(export_path)
-    wine_raw = fetch_ucirepo(id=186).data.features
-    wine_raw.to_csv(export_path)
-    
+def main(path):
+    """download data to data/raw"""
+    print(path)
+    wine_raw = fetch_ucirepo(id=186)    
+    wine_raw.data.original.to_csv(path + "/wine-raw.csv")
+
 if __name__ == '__main__':
     main()
