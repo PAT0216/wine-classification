@@ -11,9 +11,8 @@ from ucimlrepo import fetch_ucirepo
               help="Path to directory where raw data will be written to", default='~/data/raw')
 def main(path):
     """download data to data/raw"""
-    print(path)
     wine_raw = fetch_ucirepo(id=186)    
-    wine_raw.data.original.to_csv(path + "/wine-raw.csv")
+    wine_raw.data.original.to_csv(path + "/wine-raw.csv", index=False)
 
 if __name__ == '__main__':
     main()
