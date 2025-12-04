@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     image: beardw/wine-classification:4921362
     ports:
-      - "8989:8888"
+      - "8888:8888"
     volumes:
       - .:/home/jovyan
     deploy:
