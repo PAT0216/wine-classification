@@ -17,35 +17,46 @@ execute:
 editor: source
 ---
 
-
-
 # Summary
 This project illustrates how our team endeavoured to build a classification model to predict whether a wine was red or white based on a set of wine quality features (ex. pH, residual sugars, etc.).  Four models were investigated with the best one being RBF SVM. It performed extremely well on our test data, with an accuracy of 0.9969 and f1 score of 0.9979. While there were still false positives and false negatives, indicated by the scores being less than one, this is not of great concern to us. Since we are not dealing with life-threatening or possible adverse outcomes, should a prediction be incorrect, the high level of precision in our model has given us confidence to use it in production.
 
 # Introduction
 Red or white? This is a question that countless dinner guests are asked every evening. Some know exactly what they like and others are more open to exploring something new and exciting. And just like the consumer, wine producers have a vested interest in this question. However, they aren’t looking at the wine through a glass, but at the very chemistry that makes up each and every nuanced flavour. They are asking: What does the chemistry say this wine is?
-
 Our goal in this analysis is to see if we can develop a machine learning model to predict whether a wine will be classified as either white or red, based on a sample of wine chemical characteristics. This would allow the industry to be able to confirm their wines not only on a visual aspect but on a chemical level as well.
-
 There may be a time that industry producers, small and large-alike, want to dive into how their wines measure up when compared to others. This could be confirming what is already known or helping to make that key distinction when a winemaker creates a blend of white and red and would like to know how best to market their product.
-
 For example, it may be the case that a wine visually looks like a red, but that may not mean it chemically acts like one. Our model will be able to make that distinction and report back what the chemistry says.
-
 Of course, there may be classifications that don’t align with what the wine is visually or the goal of the winemaker. In these cases, it may be due to variation in the model and the prediction probability not being reasonably high for either a red or white. While this may be seen as a disadvantage, it could also provide additional insights regarding the chemical quality of the wine in question. (I.e. It could be produced as a white wine, but with some underlying qualities of red wine.) 
-
 With a proper understanding of our model, the input data, and final prediction, we hope that it will provide the wine industry with another way of viewing and marketing their product to the next couple dining out.
 
 # Data
 We are using a dataset of wine quality for wines from the northern region of Portugal (@wine_data, originally described in @wine_paper) that consists of several chemical features: fixed acidity, pH, citric acid, sulphates, residual sugar and several others.
+## Data Wrangling
+To prepare for data analysis, we:
+- combined the red and white wine datasets into a single dataframe,
+- remove the *quality* variable to avoid data leakage,
+- standardized column names,
+- created a categorical `wine_type` variable (red vs. white),
+- created a binary `target` variable (0 = red, 1 = white).
+We confirmed that the dataset contains no missing values and falls within the expected measurement ranges described in @wine_paper.
+Finally, the data were randomly split into training and test sets.
+
+## Data Validation
+Before conducting analysis, we performed a series of validation checks to ensure data quality:
+- verified the presence of all expected variables,
+- confirmed the absence of missing values,
+- checked for duplicate rows and removed them when present,
+- validated numerical ranges using domain knowledge from @wine_paper,
+- ensured that the `wine_type` and `target` variables contained only valid categories,
+- ensured that no feature-feature anomalous correlation and target-feature anomalous correlation exists.
+These checks ensured the dataset was clean, consistent, and suitable for modelling.
 
 # Methods
 All models were implemented using the scikit-learn library (@scikit-learn), and Altair (@altair) was used for visualizations. The analysis makes use of NumPy (@numpy) for numerical computations.
 
-
-# Imports
-
 ```{python}
+#| echo: false
 import numpy as np
+from IPython.display import Markdown
 if not hasattr(np, "Inf"):
     np.Inf = np.inf
 import warnings
@@ -58,8 +69,6 @@ import matplotlib.pyplot as plt
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.tree import DecisionTreeClassifier
-
-
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.compose import make_column_transformer
@@ -75,251 +84,44 @@ import os
 import pandera.pandas as pa
 os.environ["DISABLE_PANDERA_IMPORT_WARNING"] = "True"
 from pandera.errors import SchemaErrors
-
 import deepchecks
 from deepchecks.tabular import Dataset
 from deepchecks.tabular.checks import FeatureLabelCorrelation, FeatureFeatureCorrelation
 ```
 
 # Exploratory Data Analysis
-
-## Part 1: Data Ingestion & Data Wrangling  
-First, we download the raw red and white wine datasets programmatically into `data/raw/` to ensure reproducibility.
-
-Since the raw data has no NA values, this section begins with loading the red wine and white wine datasets from `data/raw/` directory separately, adding labels indicating the wine type, and combining them into a single unified dataset for further analysis.  
-
-add run in README.md
-```bash
-python scripts/download_data.py
-```
-
-```{python}
-path = "../data/raw/wine-raw.csv"
-df = pd.read_csv(path)
-```
-
-Below adding two new columns:  
- - `wine_type`: `red` for red wine, `white` for white wine. This column is used only for EDA and will not be included as a feature for classification.
- - `target`: `0` for red wine, `1` for white wine, which is the variable to be predicted.
-
-```{python}
-# drop quality if it exists
-# the continuous target quality is not within our scope of interest in the classification model
-if 'quality' in df.columns:
-    df = df.drop(columns=['quality'])
-
-# rename color to wine_type
-df = df.rename(columns={"color":"wine_type"})
-df["target"] = df["wine_type"].replace({
-    "red": 0, 
-    "white": 1
-})
-```
-
-Then merging the datasets and removing `quality` column:
- - two datasets are concatenated row-wise into one dataframe called `df_merge`
- - `quality` score is highly informative and could lead to data leakage if used as a feature when predicting wine type, therefore, we drop it from `df_merge`.
-
-```{python}
-# df_merge = pd.concat([df_red, df_white], axis=0).reset_index(drop=True)
-if 'quality' in df.columns:
-    df = df.drop(columns=["quality"])
-df.columns = df.columns.str.replace(" ", "_")
-df = df.rename(columns={"color":"wine_type"})
-df
-```
-
-```{python}
-train_df, test_df = train_test_split(df, test_size=0.2, random_state=123)
-```
-
-## Part 1.2 Data Validation 
-This section performs the validation checks to ensure the data entered into the pipeline is standardized and validated to ensure smooth functioning of the analysis performed in the next sections.
-
-```{python}
-train_df["wine_type"].value_counts()
-```
-
-#### 1.2.1 Check for empty Dataframe:
-
-```{python}
-if len(df) == 0:
-    raise ValueError("The merged dataset is empty.")
-```
-
-#### 1.2.2 Check for expected columns
-
-```{python}
-# Note: 'quality' was dropped, so we check for the remaining ones
-expected_columns = {
-    "fixed_acidity", "volatile_acidity", "citric_acid", "residual_sugar",
-    "chlorides", "free_sulfur_dioxide", "total_sulfur_dioxide", "density",
-    "pH", "sulphates", "alcohol", "wine_type", "target"
-}
-
-if not expected_columns.issubset(df.columns):
-    missing = expected_columns - set(df.columns)
-    raise ValueError(f"Missing columns: {missing}")
-```
-
-#### 1.2.3 Check for missing values
-
-```{python}
-#The notebook mentions raw data has no NAs, but good to verify
-if df.isnull().any().any():
-    raise ValueError("Unexpected missing values found in the dataset.")
-```
-
-#### 1.2.4 Check for correct data types in each column
-- Ensure every column contains the correct data type
-#### 1.2.5 Duplicate Observation Check
-- Seems like there's duplicate observations for some reason
-- dropped duplicated rows and re-validated the data
-#### 1.2.6 Check for outlier or anonymous values
-The range of outlier is determined by the paper of the dataset @wine_paper . 
-
-```{python}
-#| error: true
-# the range of checks is determined by referring to the paper related to the dataset
-
-schema = pa.DataFrameSchema(
-    {   
-        # data type check
-        "fixed_acidity": pa.Column(float, pa.Check.between(0, 20), nullable=True), 
-        "volatile_acidity": pa.Column(float, pa.Check.between(0, 2), nullable=True), 
-        "citric_acid": pa.Column(float, pa.Check.between(0, 2), nullable=True), 
-        "residual_sugar": pa.Column(float, pa.Check.between(0, 100), nullable=True),
-        "chlorides": pa.Column(float, pa.Check.between(0, 1), nullable=True), 
-        "free_sulfur_dioxide": pa.Column(float, pa.Check.between(0, 500), nullable=True), 
-        "total_sulfur_dioxide": pa.Column(float, pa.Check.between(0, 600), nullable=True), 
-        "density": pa.Column(float, pa.Check.between(0.8, 1.2), nullable=True),
-        "pH": pa.Column(float, pa.Check.between(0, 6), nullable=True), 
-        "sulphates": pa.Column(float, pa.Check.between(0, 3), nullable=True), 
-        "alcohol": pa.Column(float, pa.Check.between(5, 20), nullable=True), 
-        
-        # targets should not be nullable
-        "wine_type": pa.Column(str, pa.Check.isin(['white', 'red']), nullable=False), 
-        "target": pa.Column(int, pa.Check.isin([0, 1]), nullable=False)
-    },
-    checks=[
-        # duplicate observation check
-        pa.Check(lambda df: ~df.duplicated().any(), error="Duplicate rows found."),
-        pa.Check(lambda df: ~(df.isna().all(axis=1)).any(), error="Empty rows found.")
-    ]
-)
-
-try:
-    schema.validate(df, lazy=True)
-except SchemaErrors as se:
-    if "Duplicate rows found." in str(se):
-        print("Duplicate rows detected — drop duplicates and re-validate.")
-        df = df.drop_duplicates()
-        schema.validate(df, lazy=True)  # re-validate after dropping duplicates
-    else:
-        # raise SchemaErrors if it is other issue
-        raise se
-```
-
-#### 1.2.7 Check for correct category levels 
-
-```{python}
-wine_schema = pa.DataFrameSchema(
-    {
-        "wine_type": pa.Column(
-            str,
-            pa.Check.isin(["red", "white"]),
-            nullable=False
-        )
-    }
-)
-
-validated_df = wine_schema.validate(df, lazy=True)
-print("wine_type category level validation passed!")
-```
-
-#### 1.2.8 Check for expected distribution for target variable
-
-Since we have already counted samples in each category of the target variable at the beginning of **[Part 1.2: Data Validation](#Part-1.2-Data-Validation)**, and in **[Part 2: Exploratory Data Analysis - 2: Overall Univariate Distributions](2.-Overall-Univariate-Distributions)**, we also visualized the distribution of the target variable using histograms.  
-Based on these results, the minority class accounts for **1267 / (3930 + 1267) ≈ 24.4%** of the data, which is well above 0.1.   
-Therefore, the distribution of the target variable is not imbalanced, and no single class dominates the dataset, which confirms that the target variable follows the expected distribution and passes this check.  
-
-#### 1.2.8 Correlation check between explanatory and response variables.
-
-see the check result below in: [Part 2: Exploratory Data Analysis - 5. Target - Feature anomalous correlation check](5.-Target---Feature-anomalous-correlation-check)
-
-#### 1.2.9 Correlation check just between feature(explanatory) variables
-
-see the check result below in: [Part 2: Exploratory Data Analysis - 6. Feature - Feature anomalous correlation check](6.-Feature---Feature-anomalous-correlation-check)
-
-The final combined dataset contains:
- - all numeric chemical features
- - `wine_type` (categorical, only for EDA visualization), with 4,898 white wine samples and 1599 red wine samples.
- - `target` (binary variable for classification)  
-  
-Now this dataframe is not imbalanced and clean, it is ready for EDA and modeling.
-
-## Part 2: Exploratory Data Analysis  
 This section summarizes the data structure and important statistical properties that are related to the features of this wine classification project.
-### 1. Data Structure
 
-```{python}
-df_info = pd.DataFrame({
-    "Features": train_df.columns,
-    "Total Entries": train_df.count(),
-    "Null Values": train_df.isnull().sum(),
-    "Data Type": train_df.dtypes
-}).sort_values(by=["Data Type", "Features"])
-df_info
-```
-
-The `.info()` output shows:  
- - No missing values
- - 11 numerical features
-
-Confirms that the dataset is clean and ready for analysis.
-
-```{python}
-df_summary = train_df.describe()
-df_summary
-```
-
-Using `.describe()` to check summary statistics for all numerical variables.  
-Key observations:
- - **Residual sugar**, **free sulfur dioxide**, and **total sulfur dioxide** have wide ranges and right-skewed distributions with extreme outliers.
- - **pH**, **alcohol**, **density**, **chlorides** and **critic acid** have small standard deviations, showing relatively tight distributions.
-
+## Data Structure
+From @tbl-data-summary, there are some key observations:
+- **Residual sugar**, **free sulfur dioxide**, and **total sulfur dioxide** have wide ranges and right-skewed distributions with extreme outliers.
+- **pH**, **alcohol**, **density**, **chlorides** and **critic acid** have small standard deviations, showing relatively tight distributions.
 These statistics provide insight into which variables may separate wine types well.
+From @tbl-data-structure, 11 numerical features with no missing values, which confirms that the dataset is clean and ready for analysis.
+
+```{python}
+#| label: tbl-data-summary
+#| tbl-cap: Summary statistics for all numerical features in the wine dataset.
+
+data_summary_table = pd.read_csv("../results/tables/data_summary.csv")
+Markdown(data_summary_table.to_markdown(index=False))
+```
+
+```{python}
+#| label: tbl-data-structure
+#| tbl-cap: Summary of dataset structure, including feature names, entries, null values, and data types.
+
+data_structure_table = pd.read_csv("../results/tables/data_info.csv")
+Markdown(data_structure_table.to_markdown(index=False))
+```
+
 
 ### 2. Overall Univariate Distributions
 Overall histogram patterns:
  - Many features (e.g. **residual sugar**, **chlorides**, **sulphates**) show right-skewness, which means most wines fall in lower ranges with a few extreme values, whereas **alchohol** is slightly right-skewed.
  - The distribution of **dnesity** and **pH** are similar to Normal distribution.
 
-```{python}
-alt.data_transformers.enable("vegafusion")
 
-numeric_cols = train_df.select_dtypes('number').columns.tolist()
-
-plots = []
-for col in numeric_cols:
-    plot = alt.Chart(train_df).mark_bar().encode(
-        alt.X(
-            col, type="quantitative",
-            bin=alt.Bin(maxbins=40),
-            title=f"{col} (binned)"
-        ),
-        alt.Y("count()",title="Count").stack(False),
-    ).properties(
-        width=140,
-        height=110
-    )
-    plots.append(plot)
-
-hist_plot = alt.concat(*plots, columns=3).properties(
-    title="Univariate Distributions of Numeric Features"
-).configure_title(fontSize=20)
-hist_plot
-```
 
 ### 3. Distributions of Features by Wine Type
 Key distribution differences between red (0) and white (1) wine:
@@ -327,36 +129,7 @@ Key distribution differences between red (0) and white (1) wine:
 - For **fixed_acidity**, **volatile_acidity**, **citric_acid**, **chlorides**, and **sulphates**, the **white wines have higher density at the lower end of the scale**, so whites here look "lighter" and cleaner on these chemistry dimensions.
 - **Alcohol** levels tend to be higher in **red wines**, while white wines peak at slightly lower alcohol values. Combined with their higher pH, this suggests that whites are lighter but sweeter and more acidic.
 
-```{python}
-plot_2 = []
-numeric_cols_2 = numeric_cols.copy()
-numeric_cols_2.remove("target")
-target_col = "target"
 
-for col2 in numeric_cols_2:
-    kde_plot = alt.Chart(train_df).transform_density(
-        density=col2,
-        groupby=[target_col],
-        as_=[f"{col2}", "kde_density"],
-        steps=200
-    ).mark_line().encode(
-        alt.X(f"{col2}:Q", title=col2),
-        alt.Y("kde_density:Q", title="KDE Density").stack(False),
-        alt.Color(f"{target_col}:N", title="Wine Type")
-    ).properties(
-        width=130,
-        height=100
-    )
-    plot_2.append(kde_plot)
-
-kde_final = alt.concat(*plot_2, columns=3).resolve_scale(
-    x="independent",
-    y="independent"
-).properties(
-    title="Distributions of Different Features by Wine Type"
-).configure_title(fontSize=20)
-kde_final
-```
 
 ### 4. Pairwise Correlations
 Overall correlation patterns:
@@ -364,71 +137,15 @@ Overall correlation patterns:
  - **Alcohol** is negatively correlated with **density**, consistent with wine chemistry.
  - **pH** is negatively correlated with **fixed acidity**, showing the expected inverse relationship.
 
-```{python}
-corr = train_df[numeric_cols].corr().reset_index().melt("index")
-corr.columns = ["feature_x", "feature_y", "correlation"]
 
-heatmap = (
-    alt.Chart(corr)
-    .mark_rect()
-    .encode(
-        alt.X("feature_x:N", title="Feature X"),
-        alt.Y("feature_y:N", title="Feature Y"),
-        color=alt.Color(
-            "correlation:Q", scale=alt.Scale(domain=(-1, 1),scheme="purpleorange"),
-            title="Correlation"
-        ),
-        tooltip=["feature_x", "feature_y", "correlation"]
-    )
-    .properties(width=300, height=300, title="Correlation Heatmap")
-)
-
-heatmap = heatmap.properties(
-    title="Correlation Heatmap of Wine Chemical Features"
-).configure_title(fontSize=15)
-heatmap
-```
 
 ### 5. Target - Feature anomalous correlation check
 
-```{python}
-train_ck = train_df.drop(columns=["wine_type"])
-wine_train_ds = Dataset(
-    train_ck,
-    label="target",        
-    cat_features=[]         
-)
 
-# Check anomalous correlation between features and the target
-check_feat_lab_corr = FeatureLabelCorrelation().add_condition_feature_pps_less_than(0.9)
-check_feat_lab_corr_result = check_feat_lab_corr.run(dataset=wine_train_ds)
-
-# Raise error if any condition fails
-if not check_feat_lab_corr_result.passed_conditions():
-    raise ValueError("Feature–label correlation exceeds the acceptable threshold (< 0.9).")
-
-print("Feature–label correlation validation passed!")
-```
 
 ### 6. Feature - Feature anomalous correlation check
 
-```{python}
-check_feat_feat_corr = (
-    FeatureFeatureCorrelation()
-    .add_condition_max_number_of_pairs_above_threshold(
-        threshold=0.92,   # correlation over 0.92 is considered problematic
-        n_pairs=0         # allow 0 problematic pairs
-    )
-)
 
-check_feat_feat_corr_result = check_feat_feat_corr.run(dataset=wine_train_ds)
-
-# Raise error if condition fails
-if not check_feat_feat_corr_result.passed_conditions():
-    raise ValueError("Feature–feature correlation exceeds acceptable limits (>0.92).")
-
-print("Feature–feature correlation validation passed!")
-```
 
 # Classification Model
 
@@ -436,76 +153,21 @@ print("Feature–feature correlation validation passed!")
 - Drop `wine_type` since it is converted into target as binary column
 - seperate data set into features and target
 
-```{python}
-train_df, test_df = train_test_split(df.drop(columns=["wine_type"]), test_size=0.2, random_state=123)
 
-X_train, y_train = train_df.drop(columns=["target"]), train_df["target"]
-X_test, y_test = test_df.drop(columns=["target"]), test_df["target"]
-```
 
 ### Pipeline
 - Since all features are numerical, `StandardScaler` from sklearn is applied to all features to ensure all features have equal weights in the classifier model.
 - iterate through each model to find the optimal classifier model
 
-```{python}
-preprocessor = StandardScaler()
 
-models = {
-    "dummy": DummyClassifier(random_state = 123),
-    "Decision Tree": DecisionTreeClassifier(random_state = 123),
-    "KNN": KNeighborsClassifier(),
-    "RBF SVM": SVC(random_state = 123),
-    "Logistic Regression": LogisticRegression(max_iter = 2000, random_state = 123),
-}
-```
 
 The following code for `mean_std_cross_val_scores` is adapted from DSCI 571 lab 2
 
-```{python}
-def mean_std_cross_val_scores(model, X_train, y_train, **kwargs):
-    """
-    Returns mean and std of cross validation
 
-    Parameters
-    ----------
-    model :
-        scikit-learn model
-    X_train : numpy array or pandas DataFrame
-        X in the training data
-    y_train :
-        y in the training data
-
-    Returns
-    ----------
-        pandas Series with mean scores from cross_validation
-    """
-
-    scores = cross_validate(model, X_train, y_train, **kwargs)
-
-    mean_scores = pd.DataFrame(scores).mean()
-    std_scores = pd.DataFrame(scores).std()
-    out_col = []
-
-    for i in range(len(mean_scores)):
-        out_col.append((f"%0.4f (+/- %0.4f)" % (mean_scores.iloc[i], std_scores.iloc[i])))
-
-    return pd.Series(data=out_col, index=mean_scores.index)
-```
 
 ### Iterate through each model
 
-```{python}
-results_dict = {}
 
-for model_name, model in models.items():
-    pipe = make_pipeline(preprocessor, model)
-    results_dict[model_name] = mean_std_cross_val_scores(
-        pipe, X_train, y_train, cv = 5, return_train_score = True
-    )
-
-results_df = pd.DataFrame(results_dict).T
-results_df
-```
 
 The performance of all models are pretty similar for all models except for the Dummy classifier.
 While RBF SVM performs the best with minimum standard deviation in validation score.
@@ -514,42 +176,12 @@ While RBF SVM performs the best with minimum standard deviation in validation sc
 
 ### Confusion Matrix for each model
 
-```{python}
-for model_name, model in models.items():
-    pipe = make_pipeline(preprocessor, model)
-    ConfusionMatrixDisplay(confusion_matrix(y_train, cross_val_predict(pipe, X_train, y_train))).plot(cmap='Blues')
-    plt.title("Model: {}\nLabels: 0 = red, 1 = white ".format(model_name))
-    
-```
+
 
 ### Scoring on test data
 - other scoring metrics are calculated on the test data since the accuracy is pretty similar for all models
 
-```{python}
-from sklearn.metrics import recall_score, precision_score, accuracy_score
-from collections import defaultdict
-score_dict = defaultdict(dict)
 
-def calculate_f1(precision, recall):
-    """F1 = 2 * precision * recall / (precision + recall)"""
-    return 2 * precision * recall / (precision + recall)
-
-for model_name, model in models.items():
-    pipe = make_pipeline(preprocessor, model)
-    pipe.fit(X_train, y_train)
-    prediction = pipe.predict(X_test)
-
-    accuracy = accuracy_score(y_test, prediction)
-    recall = recall_score(y_test, prediction)
-    precision = precision_score(y_test, prediction)
-    
-    score_dict[model_name]["accuracy"] = accuracy
-    score_dict[model_name]["recall"] = recall
-    score_dict[model_name]["precision"] = precision
-    score_dict[model_name]["f1"] = calculate_f1(precision, recall)
-
-pd.DataFrame(score_dict).T
-```
 
 The RBF SVM model performs the best on the test data as expected
 
