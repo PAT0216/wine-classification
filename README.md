@@ -36,6 +36,18 @@ docker compose up
 7. Navigate to `notebooks/wine_classifier.ipynb`.
 8. Under the 'Kernel' tab, select the 'Restart Kernel and Run All Cells...'.
 
+### Download data
+Run the following python script in terminal to download data
+```bash
+python ~/scripts/download_data.py
+```
+
+### Validate, Split and Transform data
+Run the following python script in terminal to validate, split and transform data
+```bash
+python ~/scripts/validate_split_transform.py
+```
+
 ### Clean up
 Once the container is no longer needed, it can be shut down.
 1. Use `Ctrl` + `C` to stop in the terminal.
