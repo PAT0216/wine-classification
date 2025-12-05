@@ -48,6 +48,14 @@ Run the following python script in terminal to validate, split and transform dat
 python ~/scripts/validate_split_transform.py
 ```
 
+### Exploratory Data Analysis Tables and Visualizations
+Run the following python script in terminal to generate tables and visualizations used during exploratory data analysis.
+```bash
+python scripts/eda.py \
+    --clean-data=data/processed/wine-train.csv \
+    --plot-to=results/
+```
+
 ### Clean up
 Once the container is no longer needed, it can be shut down.
 1. Use `Ctrl` + `C` to stop in the terminal.
