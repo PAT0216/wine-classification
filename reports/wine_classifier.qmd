@@ -1,6 +1,20 @@
 ---
-title: Wine Classification
-jupyter: python3
+title: "Wine Classification"
+author:"Prabuddha Tamhane, Harrison Li, Shihan Xu, Wesley Beard"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+  pdf:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+bibliography: references.bib
+execute:
+  echo: false
+  warning: false
+editor: source
 ---
 
 
