@@ -1,0 +1,13 @@
+Features,Total Entries,Null Values,Data Type
+target,4256,0,int64
+alcohol,4256,0,float64
+chlorides,4256,0,float64
+citric_acid,4256,0,float64
+density,4256,0,float64
+fixed_acidity,4256,0,float64
+free_sulfur_dioxide,4256,0,float64
+pH,4256,0,float64
+residual_sugar,4256,0,float64
+sulphates,4256,0,float64
+total_sulfur_dioxide,4256,0,float64
+volatile_acidity,4256,0,float64
