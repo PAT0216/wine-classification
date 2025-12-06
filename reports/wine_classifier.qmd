@@ -155,7 +155,7 @@ This suggests that **non-linear decision boundaries** may better capture the str
 #| label: tbl-result-df
 #| tbl-cap: Cross-validated performance metrics for all evaluated classification models, including mean fit time, score time, training accuracy, and test accuracy with standard deviations across folds.
 
-corss_valid_df = pd.read_csv("../results/tables/.csv")
+corss_valid_df = pd.read_csv("../results/models/cross_val_results.csv")
 Markdown(corss_valid_df.to_markdown(index=False))
 ```
 
@@ -166,6 +166,8 @@ Overall, all machine learning models—except the DummyClassifier—achieve very
 - **Decision Tree, KNN, RBF SVM, and Logistic Regression** all show very low wrong counts for both classes.
 - **RBF SVM** performs especially well, producing near-perfect predictions with only a small number of false positives and false negatives.
 
+![Confusion Matrix](../results/models/confusion_matrix.png){#fig-confusion-matrix width=50%}
+
 These results show that those models are highly capable of distinguishing between wine types, with **RBF SVM providing the most consistent and accurate classification**.
 
 ## Test Scoring
@@ -174,6 +176,14 @@ The results show a clear trend:
 - The **DummyClassifier** performs the worst, with accuracy around 0.75 and substantially lower precision and F1.
 - **Decision Tree, KNN, and Logistic Regression** all perform well, achieving accuracy scores above 0.97 and balanced precision/recall values.
 - **RBF SVM** outperforms all other models, achieving the highest scores in accuracy, recall, precision, and F1—demonstrating excellent predictive capability and strong generalization.
+
+```{python}
+#| label: tbl-test-metrics
+#| tbl-cap: Performance metrics (Accuracy, Recall, Precision, F1) for the best performing model (RBF SVM) on the test set.
+
+test_metrics_df = pd.read_csv("../results/models/test_metrics.csv")
+Markdown(test_metrics_df.to_markdown(index=False))
+```
 
 
 # Discussion
