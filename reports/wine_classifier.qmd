@@ -160,17 +160,21 @@ Markdown(corss_valid_df.to_markdown(index=False))
 ```
 
 # Results
+## Confusion Matrix
+To further evaluate model behavior, we examined the confusion matrices for each classifier. These matrices provide a detailed view of how well each model distinguishes between red wine (label = 0) and white wine (label = 1).
+Overall, all machine learning models—except the DummyClassifier—achieve very strong separation between the two classes:
+- **Decision Tree, KNN, RBF SVM, and Logistic Regression** all show very low wrong counts for both classes.
+- **RBF SVM** performs especially well, producing near-perfect predictions with only a small number of false positives and false negatives.
 
-### Confusion Matrix for each model
+These results show that those models are highly capable of distinguishing between wine types, with **RBF SVM providing the most consistent and accurate classification**.
 
+## Test Scoring
+We next evaluated each model on the test set using **accuracy, recall, precision, and F1 score**. These metrics allow us to assess the generalization performance of each classifier beyond the training data.
+The results show a clear trend:
+- The **DummyClassifier** performs the worst, with accuracy around 0.75 and substantially lower precision and F1.
+- **Decision Tree, KNN, and Logistic Regression** all perform well, achieving accuracy scores above 0.97 and balanced precision/recall values.
+- **RBF SVM** outperforms all other models, achieving the highest scores in accuracy, recall, precision, and F1—demonstrating excellent predictive capability and strong generalization.
 
-
-### Scoring on test data
-- other scoring metrics are calculated on the test data since the accuracy is pretty similar for all models
-
-
-
-The RBF SVM model performs the best on the test data as expected
 
 # Discussion
 We found that all of the models that we tested preformed much better than our Dummy Classifier. Subsequently, comparing our models individually, each one performed well. However, the model that had the highest cross-validation score was RBF SVM at 0.9952. Since all models scored high (>0.99), we included them in calculating accuracy, recall, precision and f1 on our test data. Here again, we see RBF SVM performing the best with the highest scores in each one of these metrics (0.9969, 0.9989, 0.9969, and 0.9979 respectively).
