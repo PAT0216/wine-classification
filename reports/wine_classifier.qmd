@@ -114,37 +114,29 @@ Markdown(data_summary_table.to_markdown(index=False))
 data_structure_table = pd.read_csv("../results/tables/data_info.csv")
 Markdown(data_structure_table.to_markdown(index=False))
 ```
+## Overall Univariate Distributions
 
+![Histograms showing the univariate distributions of all numeric chemical features in the wine dataset. Each subplot illustrates the overall shape, skewness, and spread of a single variable.](../results/figures/hist_univariate_distributions.png){#fig-univariate-dist width=50%}
 
-### 2. Overall Univariate Distributions
-Overall histogram patterns:
- - Many features (e.g. **residual sugar**, **chlorides**, **sulphates**) show right-skewness, which means most wines fall in lower ranges with a few extreme values, whereas **alchohol** is slightly right-skewed.
- - The distribution of **dnesity** and **pH** are similar to Normal distribution.
+We can see from @fig-univariate-dist, many features (e.g. **residual sugar**, **chlorides**, **sulphates**) show right-skewness, which means most wines fall in lower ranges with a few extreme values, whereas **alchohol** is slightly right-skewed, the distribution of **density** and **pH** are similar to Normal distribution.
 
+## Distributions of Features by Wine Type
 
+![Kernel density estimates of each numerical feature, comparing distributions of red (0) and white (1) wines.](../results/figures/distributions_of_features.png){#fig-kde-dist width=50%}
 
-### 3. Distributions of Features by Wine Type
-Key distribution differences between red (0) and white (1) wine:
+From @fig-kde-dist, we can see differences between red (0) and white (1) wine:
 - Overall, most features for both wine types show **strongly right-skewed distributions**. The distribution of **pH** looks close to bell-shaped. For pH, the **red wines have higher pH than white wines**, so the whites are more acidic.
 - For **fixed_acidity**, **volatile_acidity**, **citric_acid**, **chlorides**, and **sulphates**, the **white wines have higher density at the lower end of the scale**, so whites here look "lighter" and cleaner on these chemistry dimensions.
 - **Alcohol** levels tend to be higher in **red wines**, while white wines peak at slightly lower alcohol values. Combined with their higher pH, this suggests that whites are lighter but sweeter and more acidic.
 
+## Pairwise Correlations
 
+![Correlation heatmap showing pairwise relationships among the wine chemical features.](../results/figures/pairwise_correlations.png){#fig-correlation width=50%}
 
-### 4. Pairwise Correlations
-Overall correlation patterns:
- - **Density** is strongly positively correlated with **residual sugar**, and **free sulfur dioxide** is strongly correlated with **total sulfur dioxide**.
- - **Alcohol** is negatively correlated with **density**, consistent with wine chemistry.
- - **pH** is negatively correlated with **fixed acidity**, showing the expected inverse relationship.
-
-
-
-### 5. Target - Feature anomalous correlation check
-
-
-
-### 6. Feature - Feature anomalous correlation check
-
+From @fig-correlation, we can observe some overall correlation patterns:
+- **Density** is strongly positively correlated with **residual sugar**, and **free sulfur dioxide** is strongly correlated with **total sulfur dioxide**.
+- **Alcohol** is negatively correlated with **density**, consistent with wine chemistry.
+- **pH** is negatively correlated with **fixed acidity**, showing the expected inverse relationship.
 
 
 # Classification Model
