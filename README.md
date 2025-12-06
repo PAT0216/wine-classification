@@ -56,6 +56,19 @@ python scripts/eda.py \
     --plot-to=results/
 ```
 
+### Model Analysis
+Run the following python script in terminal to perform model analysis and evaluation.
+```bash
+python scripts/model_analysis.py \
+    --train-features=data/processed/scaled-wine-features-train.csv \
+    --train-target=data/processed/wine-target-train.csv \
+    --test-features=data/processed/scaled-wine-features-test.csv \
+    --test-target=data/processed/wine-target-test.csv \
+    --results-dir=results/models/
+
+```
+
+
 ### Clean up
 Once the container is no longer needed, it can be shut down.
 1. Use `Ctrl` + `C` to stop in the terminal.
