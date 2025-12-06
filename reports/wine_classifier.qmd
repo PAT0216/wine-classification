@@ -180,12 +180,17 @@ We next evaluated each model on the test set using **accuracy, recall, precision
 #| tbl-cap: Performance metrics (Accuracy, Recall, Precision, F1) for the best performing model (RBF SVM) on the test set.
 
 test_metrics_df = pd.read_csv("../results/tables/test_metrics.csv")
+dummy_accuracy = test_df.loc[test_df["model"]=="dummy", "accuracy"].iloc[0]
+dummy_accuracy_rounded = round(dummy_accuracy, 2)
+mid_models = ["Decision Tree", "KNN", "Logistic Regression"]
+mid_acc_values = test_df.loc[test_df["model"].isin(mid_models), "accuracy"].values
+mid_min_accuracy = round(min(mid_acc_values), 2)
 Markdown(test_metrics_df.to_markdown(index=False))
 ```
 
 The results show a clear trend:
-- The **DummyClassifier** performs the worst, with accuracy around 0.75 and substantially lower precision and F1.
-- **Decision Tree, KNN, and Logistic Regression** all perform well, achieving accuracy scores above 0.97 and balanced precision/recall values.
+- The **DummyClassifier** performs the worst, with accuracy around `{python} dummy_accuracy_rounded` and substantially lower precision and F1.
+- **Decision Tree, KNN, and Logistic Regression** all perform well, achieving accuracy scores above `{python} mid_min_accuracy` and balanced precision/recall values.
 - **RBF SVM** outperforms all other models, achieving the highest scores in accuracy, recall, precision, and F1—demonstrating excellent predictive capability and strong generalization.
 
 
