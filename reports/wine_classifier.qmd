@@ -39,7 +39,8 @@ To prepare for data analysis, we:
 - created a binary `target` variable (0 = red, 1 = white).
 We confirmed that the dataset contains no missing values and falls within the expected measurement ranges described in @wine_paper.
 Finally, the data were randomly split into training and test sets.
-
+```{python}
+```
 ## Data Validation
 Before conducting analysis, we performed a series of validation checks to ensure data quality:
 - verified the presence of all expected variables,
@@ -138,31 +139,25 @@ From @fig-correlation, we can observe some overall correlation patterns:
 - **Alcohol** is negatively correlated with **density**, consistent with wine chemistry.
 - **pH** is negatively correlated with **fixed acidity**, showing the expected inverse relationship.
 
+# Modeling
+## Data Splitting
+First, we splited the data into training and testing sets. Meanwhile, the `wine_type` column has been encoded into the binary `target` variable and was therefore removed. Then, the resulting dataset was separated into feature dataframe and the target vector for use in modeling the steps.
 
-# Classification Model
+## Pipeline
+Since all predictors are numerical and models such as KNN and SVMs are distance-based, `StandardScaler` from sklearn was applied to all those features so as to ensure all features have equal weights in the model.
 
-- Split data into train and test set
-- Drop `wine_type` since it is converted into target as binary column
-- seperate data set into features and target
+## Model Comparison
+Overall, most classifiers achieved strong predictive performance, except for the `DummyClassifier`, which is expected, since it is a baseline that does not use feature information.
+Among all those evaluated models, the **RBF-SVM** achieved the highest validation performance and showed the smallest variability across folds, indicating a strong balance between accuracy and stability.
+This suggests that **non-linear decision boundaries** may better capture the structure of the one classification compared to linear methods. 
 
+```{python}
+#| label: tbl-result-df
+#| tbl-cap: Cross-validated performance metrics for all evaluated classification models, including mean fit time, score time, training accuracy, and test accuracy with standard deviations across folds.
 
-
-### Pipeline
-- Since all features are numerical, `StandardScaler` from sklearn is applied to all features to ensure all features have equal weights in the classifier model.
-- iterate through each model to find the optimal classifier model
-
-
-
-The following code for `mean_std_cross_val_scores` is adapted from DSCI 571 lab 2
-
-
-
-### Iterate through each model
-
-
-
-The performance of all models are pretty similar for all models except for the Dummy classifier.
-While RBF SVM performs the best with minimum standard deviation in validation score.
+corss_valid_df = pd.read_csv("../results/tables/.csv")
+Markdown(corss_valid_df.to_markdown(index=False))
+```
 
 # Results
 
