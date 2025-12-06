@@ -180,11 +180,15 @@ We next evaluated each model on the test set using **accuracy, recall, precision
 #| tbl-cap: Performance metrics (Accuracy, Recall, Precision, F1) for the best performing model (RBF SVM) on the test set.
 
 test_metrics_df = pd.read_csv("../results/tables/test_metrics.csv")
-dummy_accuracy = test_df.loc[test_df["model"]=="dummy", "accuracy"].iloc[0]
+dummy_accuracy = test_metrics_df.loc[test_metrics_df["model"]=="dummy", "accuracy"].iloc[0]
 dummy_accuracy_rounded = round(dummy_accuracy, 2)
 mid_models = ["Decision Tree", "KNN", "Logistic Regression"]
-mid_acc_values = test_df.loc[test_df["model"].isin(mid_models), "accuracy"].values
+mid_acc_values = test_metrics_df.loc[test_metrics_df["model"].isin(mid_models), "accuracy"].values
 mid_min_accuracy = round(min(mid_acc_values), 2)
+rbf_accuracy = float(test_metrics_df.loc[test_metrics_df["model"] == "RBF SVM", "accuracy"])
+rbf_recall = float(test_metrics_df.loc[test_metrics_df["model"] == "RBF SVM", "recall"])
+rbf_precision = float(test_metrics_df.loc[test_metrics_df["model"] == "RBF SVM", "precision"])
+rbf_f1 = float(test_metrics_df.loc[test_metrics_df["model"] == "RBF SVM", "f1"])
 Markdown(test_metrics_df.to_markdown(index=False))
 ```
 
@@ -197,9 +201,9 @@ The results show a clear trend:
 
 
 # Discussion
-We found that all of the models that we tested preformed much better than our Dummy Classifier. Subsequently, comparing our models individually, each one performed well. However, the model that had the highest cross-validation score was RBF SVM at 0.9952. Since all models scored high (>0.99), we included them in calculating accuracy, recall, precision and f1 on our test data. Here again, we see RBF SVM performing the best with the highest scores in each one of these metrics (0.9969, 0.9989, 0.9969, and 0.9979 respectively).
+We found that all of the models that we tested preformed much better than our Dummy Classifier. Subsequently, comparing our models individually, each one performed well. However, the model that had the highest cross-validation score was RBF SVM at `{python} rbf_score`. Since all models scored high (>0.99), we included them in calculating accuracy, recall, precision and f1 on our test data. Here again, we see RBF SVM performing the best with the highest scores in each one of these metrics (`{python} rbf_accuracy`, `{python} rbf_recall`, `{python} rbf_precision`, and `{python} rbf_f1` respectively).
 
-The metric of focus for our analysis was accuracy. Our primary aim was to ensure that we were correctly predicting whether or not a wine was red or white. Although we were looking towards accuracy, we can also see from our confusion matrices that the test recall and precision scores were high resulting in the lowest false positives and false negatives (20 and 5, during training). While our model was not being explicitly optimized regarding precision and recall, having these relatively small incorrect predictions from our training data and higher test scores adds to the robustness and our confidence of the model.
+The metric of focus for our analysis was accuracy. Our primary aim was to ensure that we were correctly predicting whether or not a wine was red or white. Although we were looking towards accuracy, we can also see from our confusion matrices that the test recall and precision scores were high resulting in the lowest false positives and false negatives. While our model was not being explicitly optimized regarding precision and recall, having these relatively small incorrect predictions from our training data and higher test scores adds to the robustness and our confidence of the model.
 
 All four of our potential models exceeded our expectations. We expected them to do well, however, were pleased with the final results and scoring. There were some key features that led us to expect at least one well performing model. These were highlighted during our Exploratory Data Analysis and can be seen in our Distributions of Different Features by Wine Type and Pairwise Correlations visualizations. By analyzing the various density plots, we were able to see that there were several noticeable differences between red and white wines for several different features. There appeared to be several distributions with varying levels of overlap that increased our confidence that any potential model would be able to correctly predict red or white with a reasonable level of accuracy. For example, we saw different distributions for the volatile acidity and pH features. Our pairwise correlations showed a varying level of correlations among all the different features. This was an interesting part of the analysis as highly correlated free sulfur dioxide and sulfates made sense, while the negatively correlated alcohol and density got us to think deeper into the chemical nature of the wine.
 
