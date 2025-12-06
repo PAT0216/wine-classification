@@ -64,7 +64,7 @@ python scripts/model_analysis.py \
     --train-target=data/processed/wine-target-train.csv \
     --test-features=data/processed/scaled-wine-features-test.csv \
     --test-target=data/processed/wine-target-test.csv \
-    --results-dir=results/models/
+    --results-dir=results
 
 ```
 
