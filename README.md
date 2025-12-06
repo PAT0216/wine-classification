@@ -66,6 +66,7 @@ python scripts/model_analysis.py \
     --test-target=data/processed/wine-target-test.csv \
     --results-dir=results/models/
 
+```
 
 
 ### Clean up
