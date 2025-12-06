@@ -173,11 +173,7 @@ Overall, we especially focus on the confusion matrix for RBF SVM model, and all 
 These results show that those models are highly capable of distinguishing between wine types, with **RBF SVM providing the most consistent and accurate classification**.
 
 ## Test Scoring
-We next evaluated each model on the test set using **accuracy, recall, precision, and F1 score**. These metrics allow us to assess the generalization performance of each classifier beyond the training data.
-The results show a clear trend:
-- The **DummyClassifier** performs the worst, with accuracy around 0.75 and substantially lower precision and F1.
-- **Decision Tree, KNN, and Logistic Regression** all perform well, achieving accuracy scores above 0.97 and balanced precision/recall values.
-- **RBF SVM** outperforms all other models, achieving the highest scores in accuracy, recall, precision, and F1—demonstrating excellent predictive capability and strong generalization.
+We next evaluated each model on the test set using **accuracy, recall, precision, and F1 score**. These metrics allow us to assess the generalization performance of each classifier beyond the training data and the result is shown in @tbl-test-metrics below.
 
 ```{python}
 #| label: tbl-test-metrics
@@ -186,6 +182,13 @@ The results show a clear trend:
 test_metrics_df = pd.read_csv("../results/tables/test_metrics.csv")
 Markdown(test_metrics_df.to_markdown(index=False))
 ```
+
+The results show a clear trend:
+- The **DummyClassifier** performs the worst, with accuracy around 0.75 and substantially lower precision and F1.
+- **Decision Tree, KNN, and Logistic Regression** all perform well, achieving accuracy scores above 0.97 and balanced precision/recall values.
+- **RBF SVM** outperforms all other models, achieving the highest scores in accuracy, recall, precision, and F1—demonstrating excellent predictive capability and strong generalization.
+
+
 
 
 # Discussion
