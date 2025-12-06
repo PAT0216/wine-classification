@@ -1,6 +1,0 @@
-,CV Score (Mean +/- Std)
-dummy,0.7427 (+/- 0.0001)
-Decision Tree,0.9810 (+/- 0.0055)
-KNN,0.9930 (+/- 0.0033)
-RBF SVM,0.9958 (+/- 0.0028)
-Logistic Regression,0.9925 (+/- 0.0030)
