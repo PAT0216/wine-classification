@@ -147,17 +147,19 @@ First, we splited the data into training and testing sets. Meanwhile, the `wine_
 Since all predictors are numerical and models such as KNN and SVMs are distance-based, `StandardScaler` from sklearn was applied to all those features so as to ensure all features have equal weights in the model.
 
 ## Model Comparison
-Overall, most classifiers achieved strong predictive performance, except for the `DummyClassifier`, which is expected, since it is a baseline that does not use feature information.
-Among all those evaluated models, the **RBF-SVM** achieved the highest validation performance and showed the smallest variability across folds, indicating a strong balance between accuracy and stability.
-This suggests that **non-linear decision boundaries** may better capture the structure of the one classification compared to linear methods. 
+Overall, from @tbl-cv-df, most classifiers achieved strong predictive performance, except for the `DummyClassifier`, which is expected, since it is a baseline that does not use feature information.
 
 ```{python}
-#| label: tbl-result-df
+#| label: tbl-cv-df
 #| tbl-cap: Cross-validated performance metrics for all evaluated classification models, including mean fit time, score time, training accuracy, and test accuracy with standard deviations across folds.
 
-corss_valid_df = pd.read_csv("../results/models/cross_val_results.csv")
+corss_valid_df = pd.read_csv("../results/tables/cross_val_results.csv")
+rbf_score = float(cross_valid_df.iloc[3, 1].split()[0])
 Markdown(corss_valid_df.to_markdown(index=False))
 ```
+
+Among all those evaluated models, the **RBF-SVM** achieved the highest validation performance and showed the smallest variability across folds, with mean CV score of `{python} rbf_score`, indicating a strong balance between accuracy and stability.
+This suggests that **non-linear decision boundaries** may better capture the structure of the one classification compared to linear methods. 
 
 # Results
 ## Confusion Matrix
@@ -167,8 +169,6 @@ Overall, we especially focus on the confusion matrix for RBF SVM model, and all 
 - **RBF SVM** performs especially well, from @fig-matrix we can see that it produced near-perfect predictions with only a small number of false positives and false negatives.
 
 ![Confusion matrix for the RBF SVM model.](../results/figures/confusion_matrix.png){#fig-matrix width=50%}
-
-![Confusion Matrix](../results/models/confusion_matrix.png){#fig-confusion-matrix width=50%}
 
 These results show that those models are highly capable of distinguishing between wine types, with **RBF SVM providing the most consistent and accurate classification**.
 
@@ -183,7 +183,7 @@ The results show a clear trend:
 #| label: tbl-test-metrics
 #| tbl-cap: Performance metrics (Accuracy, Recall, Precision, F1) for the best performing model (RBF SVM) on the test set.
 
-test_metrics_df = pd.read_csv("../results/models/test_metrics.csv")
+test_metrics_df = pd.read_csv("../results/tables/test_metrics.csv")
 Markdown(test_metrics_df.to_markdown(index=False))
 ```
 
