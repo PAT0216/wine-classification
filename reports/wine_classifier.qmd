@@ -161,10 +161,12 @@ Markdown(corss_valid_df.to_markdown(index=False))
 
 # Results
 ## Confusion Matrix
-To further evaluate model behavior, we examined the confusion matrices for each classifier. These matrices provide a detailed view of how well each model distinguishes between red wine (label = 0) and white wine (label = 1).
-Overall, all machine learning models—except the DummyClassifier—achieve very strong separation between the two classes:
+To further evaluate model behavior, we examined the confusion matrices for each classifier. The matrix provided a detailed view of how well each model distinguishes between red wine (label = 0) and white wine (label = 1).
+Overall, we especially focus on the confusion matrix for RBF SVM model, and all models—except the DummyClassifier—achieve very strong separation between the two classes:
 - **Decision Tree, KNN, RBF SVM, and Logistic Regression** all show very low wrong counts for both classes.
-- **RBF SVM** performs especially well, producing near-perfect predictions with only a small number of false positives and false negatives.
+- **RBF SVM** performs especially well, from @fig-matrix we can see that it produced near-perfect predictions with only a small number of false positives and false negatives.
+
+![Confusion matrix for the RBF SVM model.](../results/figures/confusion_matrix.png){#fig-matrix width=50%}
 
 ![Confusion Matrix](../results/models/confusion_matrix.png){#fig-confusion-matrix width=50%}
 
