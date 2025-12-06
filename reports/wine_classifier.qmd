@@ -6,10 +6,6 @@ format:
     toc: true
     toc-depth: 2
     number-sections: true
-  pdf:
-    toc: true
-    toc-depth: 2
-    number-sections: true
 bibliography: references.bib
 execute:
   echo: false
@@ -18,40 +14,56 @@ editor: source
 ---
 
 # Summary
-This project illustrates how our team endeavoured to build a classification model to predict whether a wine was red or white based on a set of wine quality features (ex. pH, residual sugars, etc.).  Four models were investigated with the best one being RBF SVM. It performed extremely well on our test data, with an accuracy of 0.9969 and f1 score of 0.9979. While there were still false positives and false negatives, indicated by the scores being less than one, this is not of great concern to us. Since we are not dealing with life-threatening or possible adverse outcomes, should a prediction be incorrect, the high level of precision in our model has given us confidence to use it in production.
+
+This project illustrates how our team endeavoured to build a classification model to predict whether a wine was red or white based on a set of wine quality features (ex. pH, residual sugars, etc.). Four models were investigated with the best one being RBF SVM, and it performed extremely well on our test data. While there were still false positives and false negatives, indicated by the scores being less than one, this is not of great concern to us. Since we are not dealing with life-threatening or possible adverse outcomes, should a prediction be incorrect, the high level of precision in our model has given us confidence to use it in production.
 
 # Introduction
+
 Red or white? This is a question that countless dinner guests are asked every evening. Some know exactly what they like and others are more open to exploring something new and exciting. And just like the consumer, wine producers have a vested interest in this question. However, they aren’t looking at the wine through a glass, but at the very chemistry that makes up each and every nuanced flavour. They are asking: What does the chemistry say this wine is?
 Our goal in this analysis is to see if we can develop a machine learning model to predict whether a wine will be classified as either white or red, based on a sample of wine chemical characteristics. This would allow the industry to be able to confirm their wines not only on a visual aspect but on a chemical level as well.
+
 There may be a time that industry producers, small and large-alike, want to dive into how their wines measure up when compared to others. This could be confirming what is already known or helping to make that key distinction when a winemaker creates a blend of white and red and would like to know how best to market their product.
+
 For example, it may be the case that a wine visually looks like a red, but that may not mean it chemically acts like one. Our model will be able to make that distinction and report back what the chemistry says.
+
 Of course, there may be classifications that don’t align with what the wine is visually or the goal of the winemaker. In these cases, it may be due to variation in the model and the prediction probability not being reasonably high for either a red or white. While this may be seen as a disadvantage, it could also provide additional insights regarding the chemical quality of the wine in question. (I.e. It could be produced as a white wine, but with some underlying qualities of red wine.) 
+
 With a proper understanding of our model, the input data, and final prediction, we hope that it will provide the wine industry with another way of viewing and marketing their product to the next couple dining out.
 
 # Data
+
 We are using a dataset of wine quality for wines from the northern region of Portugal (@wine_data, originally described in @wine_paper) that consists of several chemical features: fixed acidity, pH, citric acid, sulphates, residual sugar and several others.
+
 ## Data Wrangling
+
 To prepare for data analysis, we:
+
 - combined the red and white wine datasets into a single dataframe,
 - remove the *quality* variable to avoid data leakage,
 - standardized column names,
 - created a categorical `wine_type` variable (red vs. white),
 - created a binary `target` variable (0 = red, 1 = white).
+
 We confirmed that the dataset contains no missing values and falls within the expected measurement ranges described in @wine_paper.
 Finally, the data were randomly split into training and test sets.
 ```{python}
 ```
+
 ## Data Validation
+
 Before conducting analysis, we performed a series of validation checks to ensure data quality:
+
 - verified the presence of all expected variables,
 - confirmed the absence of missing values,
 - checked for duplicate rows and removed them when present,
 - validated numerical ranges using domain knowledge from @wine_paper,
 - ensured that the `wine_type` and `target` variables contained only valid categories,
 - ensured that no feature-feature anomalous correlation and target-feature anomalous correlation exists.
+
 These checks ensured the dataset was clean, consistent, and suitable for modelling.
 
 # Methods
+
 All models were implemented using the scikit-learn library (@scikit-learn), and Altair (@altair) was used for visualizations. The analysis makes use of NumPy (@numpy) for numerical computations.
 
 ```{python}
@@ -91,12 +103,16 @@ from deepchecks.tabular.checks import FeatureLabelCorrelation, FeatureFeatureCor
 ```
 
 # Exploratory Data Analysis
+
 This section summarizes the data structure and important statistical properties that are related to the features of this wine classification project.
 
 ## Data Structure
+
 From @tbl-data-summary, there are some key observations:
+
 - **Residual sugar**, **free sulfur dioxide**, and **total sulfur dioxide** have wide ranges and right-skewed distributions with extreme outliers.
 - **pH**, **alcohol**, **density**, **chlorides** and **critic acid** have small standard deviations, showing relatively tight distributions.
+
 These statistics provide insight into which variables may separate wine types well.
 From @tbl-data-structure, 11 numerical features with no missing values, which confirms that the dataset is clean and ready for analysis.
 
@@ -126,6 +142,7 @@ We can see from @fig-univariate-dist, many features (e.g. **residual sugar**, **
 ![Kernel density estimates of each numerical feature, comparing distributions of red (0) and white (1) wines.](../results/figures/distributions_of_features.png){#fig-kde-dist width=50%}
 
 From @fig-kde-dist, we can see differences between red (0) and white (1) wine:
+
 - Overall, most features for both wine types show **strongly right-skewed distributions**. The distribution of **pH** looks close to bell-shaped. For pH, the **red wines have higher pH than white wines**, so the whites are more acidic.
 - For **fixed_acidity**, **volatile_acidity**, **citric_acid**, **chlorides**, and **sulphates**, the **white wines have higher density at the lower end of the scale**, so whites here look "lighter" and cleaner on these chemistry dimensions.
 - **Alcohol** levels tend to be higher in **red wines**, while white wines peak at slightly lower alcohol values. Combined with their higher pH, this suggests that whites are lighter but sweeter and more acidic.
@@ -135,36 +152,46 @@ From @fig-kde-dist, we can see differences between red (0) and white (1) wine:
 ![Correlation heatmap showing pairwise relationships among the wine chemical features.](../results/figures/pairwise_correlations.png){#fig-correlation width=50%}
 
 From @fig-correlation, we can observe some overall correlation patterns:
+
 - **Density** is strongly positively correlated with **residual sugar**, and **free sulfur dioxide** is strongly correlated with **total sulfur dioxide**.
 - **Alcohol** is negatively correlated with **density**, consistent with wine chemistry.
 - **pH** is negatively correlated with **fixed acidity**, showing the expected inverse relationship.
 
 # Modeling
+
 ## Data Splitting
+
 First, we splited the data into training and testing sets. Meanwhile, the `wine_type` column has been encoded into the binary `target` variable and was therefore removed. Then, the resulting dataset was separated into feature dataframe and the target vector for use in modeling the steps.
 
 ## Pipeline
+
 Since all predictors are numerical and models such as KNN and SVMs are distance-based, `StandardScaler` from sklearn was applied to all those features so as to ensure all features have equal weights in the model.
 
 ## Model Comparison
+
 Overall, from @tbl-cv-df, most classifiers achieved strong predictive performance, except for the `DummyClassifier`, which is expected, since it is a baseline that does not use feature information.
 
 ```{python}
 #| label: tbl-cv-df
 #| tbl-cap: Cross-validated performance metrics for all evaluated classification models, including mean fit time, score time, training accuracy, and test accuracy with standard deviations across folds.
 
-corss_valid_df = pd.read_csv("../results/tables/cross_val_results.csv")
-rbf_score = float(cross_valid_df.iloc[3, 1].split()[0])
-Markdown(corss_valid_df.to_markdown(index=False))
+cross_valid_df = pd.read_csv("../results/tables/cross_val_results.csv")
+cross_valid_df = cross_valid_df.rename(columns={"Unnamed: 0": "model"})
+rbf_test_cv = float(cross_valid_df.iloc[3, 3].split()[0])
+rbf_train_cv = float(cross_valid_df.iloc[3, 4].split()[0])
+Markdown(cross_valid_df.to_markdown(index=False))
 ```
 
-Among all those evaluated models, the **RBF-SVM** achieved the highest validation performance and showed the smallest variability across folds, with mean CV score of `{python} rbf_score`, indicating a strong balance between accuracy and stability.
+Among all those evaluated models, the **RBF-SVM** achieved the highest validation performance and showed the smallest variability across folds, with mean CV train score of `{python} rbf_train_cv`, and test score of `{python} rbf_test_cv`, indicating a strong balance between accuracy and stability.
 This suggests that **non-linear decision boundaries** may better capture the structure of the one classification compared to linear methods. 
 
 # Results
+
 ## Confusion Matrix
+
 To further evaluate model behavior, we examined the confusion matrices for each classifier. The matrix provided a detailed view of how well each model distinguishes between red wine (label = 0) and white wine (label = 1).
 Overall, we especially focus on the confusion matrix for RBF SVM model, and all models—except the DummyClassifier—achieve very strong separation between the two classes:
+
 - **Decision Tree, KNN, RBF SVM, and Logistic Regression** all show very low wrong counts for both classes.
 - **RBF SVM** performs especially well, from @fig-matrix we can see that it produced near-perfect predictions with only a small number of false positives and false negatives.
 
@@ -173,6 +200,7 @@ Overall, we especially focus on the confusion matrix for RBF SVM model, and all 
 These results show that those models are highly capable of distinguishing between wine types, with **RBF SVM providing the most consistent and accurate classification**.
 
 ## Test Scoring
+
 We next evaluated each model on the test set using **accuracy, recall, precision, and F1 score**. These metrics allow us to assess the generalization performance of each classifier beyond the training data and the result is shown in @tbl-test-metrics below.
 
 ```{python}
@@ -180,28 +208,28 @@ We next evaluated each model on the test set using **accuracy, recall, precision
 #| tbl-cap: Performance metrics (Accuracy, Recall, Precision, F1) for the best performing model (RBF SVM) on the test set.
 
 test_metrics_df = pd.read_csv("../results/tables/test_metrics.csv")
-dummy_accuracy = test_metrics_df.loc[test_metrics_df["model"]=="dummy", "accuracy"].iloc[0]
-dummy_accuracy_rounded = round(dummy_accuracy, 2)
-mid_models = ["Decision Tree", "KNN", "Logistic Regression"]
-mid_acc_values = test_metrics_df.loc[test_metrics_df["model"].isin(mid_models), "accuracy"].values
-mid_min_accuracy = round(min(mid_acc_values), 2)
-rbf_accuracy = float(test_metrics_df.loc[test_metrics_df["model"] == "RBF SVM", "accuracy"])
-rbf_recall = float(test_metrics_df.loc[test_metrics_df["model"] == "RBF SVM", "recall"])
-rbf_precision = float(test_metrics_df.loc[test_metrics_df["model"] == "RBF SVM", "precision"])
-rbf_f1 = float(test_metrics_df.loc[test_metrics_df["model"] == "RBF SVM", "f1"])
+test_metrics_df = test_metrics_df.rename(columns={"Unnamed: 0": "model"})
+dummy_accuracy = test_metrics_df.iloc[0, test_metrics_df.columns.get_loc("accuracy")]
+dummy_accuracy_rounded = float(round(dummy_accuracy, 4))
+mid_indices = [1, 2, 4]
+mid_acc_values = test_metrics_df.iloc[mid_indices, test_metrics_df.columns.get_loc("accuracy")].values
+mid_min_accuracy = round(float(min(mid_acc_values)), 4)
+rbf_accuracy = float(round(test_metrics_df.iloc[3, test_metrics_df.columns.get_loc("accuracy")], 4))
+rbf_recall = float(round(test_metrics_df.iloc[3, test_metrics_df.columns.get_loc("recall")], 4))
+rbf_precision = float(round(test_metrics_df.iloc[3, test_metrics_df.columns.get_loc("precision")], 4))
+rbf_f1 = float(round(test_metrics_df.iloc[3, test_metrics_df.columns.get_loc("f1")], 4))
 Markdown(test_metrics_df.to_markdown(index=False))
 ```
 
 The results show a clear trend:
+
 - The **DummyClassifier** performs the worst, with accuracy around `{python} dummy_accuracy_rounded` and substantially lower precision and F1.
 - **Decision Tree, KNN, and Logistic Regression** all perform well, achieving accuracy scores above `{python} mid_min_accuracy` and balanced precision/recall values.
 - **RBF SVM** outperforms all other models, achieving the highest scores in accuracy, recall, precision, and F1—demonstrating excellent predictive capability and strong generalization.
 
-
-
-
 # Discussion
-We found that all of the models that we tested preformed much better than our Dummy Classifier. Subsequently, comparing our models individually, each one performed well. However, the model that had the highest cross-validation score was RBF SVM at `{python} rbf_score`. Since all models scored high (>0.99), we included them in calculating accuracy, recall, precision and f1 on our test data. Here again, we see RBF SVM performing the best with the highest scores in each one of these metrics (`{python} rbf_accuracy`, `{python} rbf_recall`, `{python} rbf_precision`, and `{python} rbf_f1` respectively).
+
+We found that all of the models that we tested preformed much better than our Dummy Classifier. Subsequently, comparing our models individually, each one performed well. However, the model that had the highest cross-validation score was RBF SVM at `{python} rbf_test_cv`. Since all models scored high (>0.99), we included them in calculating accuracy, recall, precision and f1 on our test data. Here again, we see RBF SVM performing the best with the highest scores in each one of these metrics (`{python} rbf_accuracy`, `{python} rbf_recall`, `{python} rbf_precision`, and `{python} rbf_f1` respectively).
 
 The metric of focus for our analysis was accuracy. Our primary aim was to ensure that we were correctly predicting whether or not a wine was red or white. Although we were looking towards accuracy, we can also see from our confusion matrices that the test recall and precision scores were high resulting in the lowest false positives and false negatives. While our model was not being explicitly optimized regarding precision and recall, having these relatively small incorrect predictions from our training data and higher test scores adds to the robustness and our confidence of the model.
 
