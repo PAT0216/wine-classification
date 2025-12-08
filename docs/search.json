@@ -1,0 +1,86 @@
+[
+  {
+    "objectID": "reports/wine_classifier.html",
+    "href": "reports/wine_classifier.html",
+    "title": "Wine Classification",
+    "section": "",
+    "text": "This project illustrates how our team endeavoured to build a classification model to predict whether a wine was red or white based on a set of wine quality features (ex. pH, residual sugars, etc.). Four models were investigated with the best one being RBF SVM, and it performed extremely well on our test data. While there were still false positives and false negatives, indicated by the scores being less than one, this is not of great concern to us. Since we are not dealing with life-threatening or possible adverse outcomes, should a prediction be incorrect, the high level of precision in our model has given us confidence to use it in production."
+  },
+  {
+    "objectID": "reports/wine_classifier.html#data-wrangling",
+    "href": "reports/wine_classifier.html#data-wrangling",
+    "title": "Wine Classification",
+    "section": "3.1 Data Wrangling",
+    "text": "3.1 Data Wrangling\nTo prepare for data analysis, we:\n\ncombined the red and white wine datasets into a single dataframe,\nremove the quality variable to avoid data leakage,\nstandardized column names,\ncreated a categorical wine_type variable (red vs. white),\ncreated a binary target variable (0 = red, 1 = white).\n\nWe confirmed that the dataset contains no missing values and falls within the expected measurement ranges described in P. Cortez et al. (2009). Finally, the data were randomly split into training and test sets."
+  },
+  {
+    "objectID": "reports/wine_classifier.html#data-validation",
+    "href": "reports/wine_classifier.html#data-validation",
+    "title": "Wine Classification",
+    "section": "3.2 Data Validation",
+    "text": "3.2 Data Validation\nBefore conducting analysis, we performed a series of validation checks to ensure data quality:\n\nverified the presence of all expected variables,\nconfirmed the absence of missing values,\nchecked for duplicate rows and removed them when present,\nvalidated numerical ranges using domain knowledge from P. Cortez et al. (2009),\nensured that the wine_type and target variables contained only valid categories,\nensured that no feature-feature anomalous correlation and target-feature anomalous correlation exists.\n\nThese checks ensured the dataset was clean, consistent, and suitable for modelling."
+  },
+  {
+    "objectID": "reports/wine_classifier.html#data-structure",
+    "href": "reports/wine_classifier.html#data-structure",
+    "title": "Wine Classification",
+    "section": "5.1 Data Structure",
+    "text": "5.1 Data Structure\nFrom Table 1, there are some key observations:\n\nResidual sugar, free sulfur dioxide, and total sulfur dioxide have wide ranges and right-skewed distributions with extreme outliers.\npH, alcohol, density, chlorides and critic acid have small standard deviations, showing relatively tight distributions.\n\nThese statistics provide insight into which variables may separate wine types well. From Table 2, 11 numerical features with no missing values, which confirms that the dataset is clean and ready for analysis.\n\n\n\n\nTable 1: Summary statistics for all numerical features in the wine dataset.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUnnamed: 0\nfixed_acidity\nvolatile_acidity\ncitric_acid\nresidual_sugar\nchlorides\nfree_sulfur_dioxide\ntotal_sulfur_dioxide\ndensity\npH\nsulphates\nalcohol\ntarget\n\n\n\n\ncount\n4256\n4256\n4256\n4256\n4256\n4256\n4256\n4256\n4256\n4256\n4256\n4256\n\n\nmean\n7.19754\n0.345301\n0.314866\n5.06326\n0.0567735\n29.9641\n113.751\n0.994537\n3.22858\n0.533609\n10.5558\n0.742716\n\n\nstd\n1.30927\n0.168979\n0.146301\n4.5334\n0.0364303\n17.7682\n56.7417\n0.00296598\n0.161483\n0.148742\n1.18807\n0.437188\n\n\nmin\n3.8\n0.08\n0\n0.6\n0.012\n1\n6\n0.98711\n2.72\n0.22\n8\n0\n\n\n25%\n6.4\n0.23\n0.24\n1.8\n0.038\n16\n73\n0.99226\n3.12\n0.43\n9.5\n0\n\n\n50%\n7\n0.3\n0.31\n2.7\n0.047\n28\n116\n0.994685\n3.22\n0.51\n10.4\n1\n\n\n75%\n7.7\n0.41\n0.39\n7.5\n0.066\n41\n154\n0.99675\n3.33\n0.6\n11.4\n1\n\n\nmax\n15.9\n1.58\n1.66\n65.8\n0.611\n289\n440\n1.03898\n4.01\n2\n14.9\n1\n\n\n\n\n\n\n\n\n\n\n\n\nTable 2: Summary of dataset structure, including feature names, entries, null values, and data types.\n\n\n\n\n\n\nFeatures\nTotal Entries\nNull Values\nData Type\n\n\n\n\ntarget\n4256\n0\nint64\n\n\nalcohol\n4256\n0\nfloat64\n\n\nchlorides\n4256\n0\nfloat64\n\n\ncitric_acid\n4256\n0\nfloat64\n\n\ndensity\n4256\n0\nfloat64\n\n\nfixed_acidity\n4256\n0\nfloat64\n\n\nfree_sulfur_dioxide\n4256\n0\nfloat64\n\n\npH\n4256\n0\nfloat64\n\n\nresidual_sugar\n4256\n0\nfloat64\n\n\nsulphates\n4256\n0\nfloat64\n\n\ntotal_sulfur_dioxide\n4256\n0\nfloat64\n\n\nvolatile_acidity\n4256\n0\nfloat64"
+  },
+  {
+    "objectID": "reports/wine_classifier.html#overall-univariate-distributions",
+    "href": "reports/wine_classifier.html#overall-univariate-distributions",
+    "title": "Wine Classification",
+    "section": "5.2 Overall Univariate Distributions",
+    "text": "5.2 Overall Univariate Distributions\n\n\n\n\n\n\nFigure 1: Histograms showing the univariate distributions of all numeric chemical features in the wine dataset. Each subplot illustrates the overall shape, skewness, and spread of a single variable.\n\n\n\nWe can see from Figure 1, many features (e.g. residual sugar, chlorides, sulphates) show right-skewness, which means most wines fall in lower ranges with a few extreme values, whereas alchohol is slightly right-skewed, the distribution of density and pH are similar to Normal distribution."
+  },
+  {
+    "objectID": "reports/wine_classifier.html#distributions-of-features-by-wine-type",
+    "href": "reports/wine_classifier.html#distributions-of-features-by-wine-type",
+    "title": "Wine Classification",
+    "section": "5.3 Distributions of Features by Wine Type",
+    "text": "5.3 Distributions of Features by Wine Type\n\n\n\n\n\n\nFigure 2: Kernel density estimates of each numerical feature, comparing distributions of red (0) and white (1) wines.\n\n\n\nFrom Figure 2, we can see differences between red (0) and white (1) wine:\n\nOverall, most features for both wine types show strongly right-skewed distributions. The distribution of pH looks close to bell-shaped. For pH, the red wines have higher pH than white wines, so the whites are more acidic.\nFor fixed_acidity, volatile_acidity, citric_acid, chlorides, and sulphates, the white wines have higher density at the lower end of the scale, so whites here look “lighter” and cleaner on these chemistry dimensions.\nAlcohol levels tend to be higher in red wines, while white wines peak at slightly lower alcohol values. Combined with their higher pH, this suggests that whites are lighter but sweeter and more acidic."
+  },
+  {
+    "objectID": "reports/wine_classifier.html#pairwise-correlations",
+    "href": "reports/wine_classifier.html#pairwise-correlations",
+    "title": "Wine Classification",
+    "section": "5.4 Pairwise Correlations",
+    "text": "5.4 Pairwise Correlations\n\n\n\n\n\n\nFigure 3: Correlation heatmap showing pairwise relationships among the wine chemical features.\n\n\n\nFrom Figure 3, we can observe some overall correlation patterns:\n\nDensity is strongly positively correlated with residual sugar, and free sulfur dioxide is strongly correlated with total sulfur dioxide.\nAlcohol is negatively correlated with density, consistent with wine chemistry.\npH is negatively correlated with fixed acidity, showing the expected inverse relationship."
+  },
+  {
+    "objectID": "reports/wine_classifier.html#data-splitting",
+    "href": "reports/wine_classifier.html#data-splitting",
+    "title": "Wine Classification",
+    "section": "6.1 Data Splitting",
+    "text": "6.1 Data Splitting\nFirst, we splited the data into training and testing sets. Meanwhile, the wine_type column has been encoded into the binary target variable and was therefore removed. Then, the resulting dataset was separated into feature dataframe and the target vector for use in modeling the steps."
+  },
+  {
+    "objectID": "reports/wine_classifier.html#pipeline",
+    "href": "reports/wine_classifier.html#pipeline",
+    "title": "Wine Classification",
+    "section": "6.2 Pipeline",
+    "text": "6.2 Pipeline\nSince all predictors are numerical and models such as KNN and SVMs are distance-based, StandardScaler from sklearn was applied to all those features so as to ensure all features have equal weights in the model."
+  },
+  {
+    "objectID": "reports/wine_classifier.html#model-comparison",
+    "href": "reports/wine_classifier.html#model-comparison",
+    "title": "Wine Classification",
+    "section": "6.3 Model Comparison",
+    "text": "6.3 Model Comparison\nOverall, from Table 3, most classifiers achieved strong predictive performance, except for the DummyClassifier, which is expected, since it is a baseline that does not use feature information.\n\n\n\n\nTable 3: Cross-validated performance metrics for all evaluated classification models, including mean fit time, score time, training accuracy, and test accuracy with standard deviations across folds.\n\n\n\n\n\n\n\n\n\n\n\n\n\nmodel\nfit_time\nscore_time\ntest_score\ntrain_score\n\n\n\n\ndummy\n0.0006 (+/- 0.0006)\n0.0005 (+/- 0.0001)\n0.7427 (+/- 0.0001)\n0.7427 (+/- 0.0000)\n\n\nDecision Tree\n0.0127 (+/- 0.0004)\n0.0007 (+/- 0.0000)\n0.9810 (+/- 0.0061)\n0.9998 (+/- 0.0002)\n\n\nKNN\n0.0024 (+/- 0.0001)\n0.0110 (+/- 0.0003)\n0.9930 (+/- 0.0037)\n0.9947 (+/- 0.0009)\n\n\nRBF SVM\n0.0183 (+/- 0.0018)\n0.0061 (+/- 0.0002)\n0.9958 (+/- 0.0032)\n0.9969 (+/- 0.0008)\n\n\nLogistic Regression\n0.0037 (+/- 0.0018)\n0.0007 (+/- 0.0001)\n0.9925 (+/- 0.0034)\n0.9937 (+/- 0.0006)\n\n\n\n\n\n\n\n\nAmong all those evaluated models, the RBF-SVM achieved the highest validation performance and showed the smallest variability across folds, with mean CV train score of 0.9969, and test score of 0.9958, indicating a strong balance between accuracy and stability. This suggests that non-linear decision boundaries may better capture the structure of the one classification compared to linear methods."
+  },
+  {
+    "objectID": "reports/wine_classifier.html#confusion-matrix",
+    "href": "reports/wine_classifier.html#confusion-matrix",
+    "title": "Wine Classification",
+    "section": "7.1 Confusion Matrix",
+    "text": "7.1 Confusion Matrix\nTo further evaluate model behavior, we examined the confusion matrices for each classifier. The matrix provided a detailed view of how well each model distinguishes between red wine (label = 0) and white wine (label = 1). Overall, we especially focus on the confusion matrix for RBF SVM model, and all models—except the DummyClassifier—achieve very strong separation between the two classes:\n\nDecision Tree, KNN, RBF SVM, and Logistic Regression all show very low wrong counts for both classes.\nRBF SVM performs especially well, from Figure 4 we can see that it produced near-perfect predictions with only a small number of false positives and false negatives.\n\n\n\n\n\n\n\nFigure 4: Confusion matrix for the RBF SVM model.\n\n\n\nThese results show that those models are highly capable of distinguishing between wine types, with RBF SVM providing the most consistent and accurate classification."
+  },
+  {
+    "objectID": "reports/wine_classifier.html#test-scoring",
+    "href": "reports/wine_classifier.html#test-scoring",
+    "title": "Wine Classification",
+    "section": "7.2 Test Scoring",
+    "text": "7.2 Test Scoring\nWe next evaluated each model on the test set using accuracy, recall, precision, and F1 score. These metrics allow us to assess the generalization performance of each classifier beyond the training data and the result is shown in Table 4 below.\n\n\n\n\nTable 4: Performance metrics (Accuracy, Recall, Precision, F1) for the best performing model (RBF SVM) on the test set.\n\n\n\n\n\n\nmodel\naccuracy\nrecall\nprecision\nf1\n\n\n\n\ndummy\n0.75188\n1\n0.75188\n0.858369\n\n\nDecision Tree\n0.976504\n0.9875\n0.981366\n0.984424\n\n\nKNN\n0.986842\n0.99125\n0.99125\n0.99125\n\n\nRBF SVM\n0.993421\n0.99625\n0.995006\n0.995628\n\n\nLogistic Regression\n0.989662\n0.9925\n0.993742\n0.993121\n\n\n\n\n\n\n\n\nThe results show a clear trend:\n\nThe DummyClassifier performs the worst, with accuracy around 0.7519 and substantially lower precision and F1.\nDecision Tree, KNN, and Logistic Regression all perform well, achieving accuracy scores above 0.9765 and balanced precision/recall values.\nRBF SVM outperforms all other models, achieving the highest scores in accuracy, recall, precision, and F1—demonstrating excellent predictive capability and strong generalization."
+  }
+]
