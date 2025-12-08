@@ -1,0 +1,5 @@
+project:
+  type: website
+  output-dir: docs
+  render: 
+    - reports/wine_classifier.qmd
