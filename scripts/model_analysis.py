@@ -79,30 +79,11 @@ def main(train_features, train_target, test_features, test_target, results_dir, 
     # ------------------------------------------------------------------
     # 1. Cross-validation results (full table, like in IPYNB)
     # ------------------------------------------------------------------
+    from src.model_evaluation import compute_cv_results
     print("Performing cross-validation for all models ...")
-    cv_results_dict = {}
+    
+    cv_results_df = compute_cv_results(models, X_train, y_train, cv=5)
 
-    for model_name, model in models.items():
-        scores = cross_validate(
-            model,
-            X_train,
-            y_train,
-            cv=5,
-            return_train_score=True,
-        )
-
-        mean_scores = pd.DataFrame(scores).mean()
-        std_scores = pd.DataFrame(scores).std()
-
-        # Format each metric as "mean (+/- std)"
-        formatted = {
-            metric: f"{mean_scores[metric]:.4f} (+/- {std_scores[metric]:.4f})"
-            for metric in mean_scores.index
-        }
-
-        cv_results_dict[model_name] = formatted
-
-    cv_results_df = pd.DataFrame(cv_results_dict).T
     cv_results_path = os.path.join(tables_dir, "cross_val_results.csv")
     cv_results_df.to_csv(cv_results_path)
     print(f"Cross-validation results saved to {cv_results_path}")
