@@ -1,13 +1,14 @@
 import pandas as pd
 from sklearn.model_selection import cross_validate
 
+
 def compute_cv_results(models: dict, X_train: pd.DataFrame, y_train, cv: int = 5) -> pd.DataFrame:
     """
     Compute cross-validation results for multiple models,
     show the results as a dataframe.
 
-    This function modulizes the "Cross-validation results" part from the 
-    original `scripts/model_analysis.py`. It runs `cross_validate` from 
+    This function modulizes the "Cross-validation results" part from the
+    original `scripts/model_analysis.py`. It runs `cross_validate` from
     `sklearn.model_selection` for each model, and returns the mean and
     standard deviation of each metric in this format: "mean (+/- std)".
 
@@ -50,7 +51,7 @@ def compute_cv_results(models: dict, X_train: pd.DataFrame, y_train, cv: int = 5
         raise ValueError("`X_train` and `y_train` must have the same lengths.")
     if not isinstance(cv, int) or cv < 2:
         raise ValueError("`cv` must be an integer >= 2.")
-    
+
     cv_results_dict = {}
 
     for model_name, model in models.items():
