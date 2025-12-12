@@ -13,6 +13,8 @@ MODELS_SMALL = {
 }
 
 # function: compute_cv_results() - normal and edge case test
+
+
 def test_compute_cv_results_success():
     """Normal and edge case: returns a pd.Dataframe with expected columns."""
     df = compute_cv_results(MODELS_SMALL, X_SMALL, y_SMALL, cv=2)
@@ -23,6 +25,8 @@ def test_compute_cv_results_success():
     assert "(+/-" in df.loc["dummy", "test_score"]
 
 # compute_cv_results() - error case test
+
+
 def test_compute_cv_results_error():
     """Error case: input checks."""
     with pytest.raises(TypeError, match="`models` must be a dictionary"):
