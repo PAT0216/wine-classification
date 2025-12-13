@@ -144,10 +144,10 @@ $(FIGURES_DIR)/confusion_matrix.png: $(TABLES_DIR)/cross_val_results.csv
 # REPORT GENERATION
 # ==============================================================================
 
-# Step 5: Render the final Quarto report (HTML and PDF)
+# Step 5: Render the final Quarto report (HTML)
 # Input: All tables and figures from EDA and model analysis
-# Output: reports/wine_classifier.html and reports/wine_classifier.pdf
-$(REPORTS_DIR)/wine_classifier.html $(REPORTS_DIR)/wine_classifier.pdf: $(TABLES_DIR)/data_summary.csv \
+# Output: reports/wine_classifier.html
+$(REPORTS_DIR)/wine_classifier.html: $(TABLES_DIR)/data_summary.csv \
                                       $(TABLES_DIR)/data_info.csv \
                                       $(TABLES_DIR)/cross_val_results.csv \
                                       $(TABLES_DIR)/test_metrics.csv \
@@ -157,7 +157,6 @@ $(REPORTS_DIR)/wine_classifier.html $(REPORTS_DIR)/wine_classifier.pdf: $(TABLES
                                       $(FIGURES_DIR)/confusion_matrix.png \
                                       $(REPORTS_DIR)/wine_classifier.qmd
 	cd $(REPORTS_DIR) && quarto render wine_classifier.qmd --to html
-	cd $(REPORTS_DIR) && quarto render wine_classifier.qmd --to pdf
 
 # ==============================================================================
 # CLEAN TARGET
