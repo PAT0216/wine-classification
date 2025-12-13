@@ -2,6 +2,13 @@
 # author: Harrison Li
 # date: 2025-12-05
 
+import sys
+from pathlib import Path
+# Ensure project root is on sys.path so `import src...` works when running:
+#   python scripts/model_analysis.py ...
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+
 import click
 import pandas as pd
 import numpy as np
