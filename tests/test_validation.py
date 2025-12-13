@@ -1,3 +1,41 @@
+"""
+Tests for the `validate` function in `src.validate` for the wine dataset.
+
+This module uses `pytest` and `pandera` to validate that the `validate` function:
+
+- Raises appropriate errors for invalid inputs:
+  - Non-DataFrame input
+  - Empty DataFrame
+  - Missing columns
+  - Invalid categorical labels
+  - Missing values in critical columns
+  - Numeric columns out of allowed ranges
+  - Wrong numeric types
+- Correctly handles duplicate rows by removing them
+- Correctly raises errors for entirely missing observations (rows of NaNs)
+- Passes when given valid data
+
+The tests include:
+1. Type checks
+2. Empty DataFrame checks
+3. Missing column checks
+4. Invalid categorical label checks
+5. Missing value checks
+6. Numeric out-of-range checks (too high / too low)
+7. Numeric type checks
+8. Duplicate row handling
+9. Entirely missing row checks
+10. Parametrized tests for multiple invalid data cases
+11. Validation of correctly formatted data
+
+Examples
+--------
+Run all tests:
+
+$ pytest tests/test_validation.py
+"""
+
+
 import pytest
 import os
 import numpy as np
