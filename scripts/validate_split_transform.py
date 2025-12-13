@@ -28,12 +28,13 @@ import pandas as pd
 from sklearn import set_config
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import sys
+
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from src.validate import validate
-
 
 
 def df(data):
@@ -196,8 +197,12 @@ def main(raw_path, raw_filename, processed_path, preprocessor_path, seed):
     X_test = preprocessor.transform(X_test)
 
     # export splitted and transformed feature/targets
-    X_train.to_csv(os.path.join(processed_path, "scaled-wine-features-train.csv"), index=False)
-    X_test.to_csv(os.path.join(processed_path, "scaled-wine-features-test.csv"), index=False)
+    X_train.to_csv(
+        os.path.join(processed_path, "scaled-wine-features-train.csv"), index=False
+    )
+    X_test.to_csv(
+        os.path.join(processed_path, "scaled-wine-features-test.csv"), index=False
+    )
     y_train.to_csv(os.path.join(processed_path, "wine-target-train.csv"), index=False)
     y_test.to_csv(os.path.join(processed_path, "wine-target-test.csv"), index=False)
 
