@@ -1,6 +1,8 @@
 """
 Tests for the `validate` function in `src.validate` for the wine dataset.
 
+Attribution: the help of ChatGPT was used to cover various test cases and correct for errors.
+
 This module uses `pytest` and `pandera` to validate that the `validate` function:
 
 - Raises appropriate errors for invalid inputs:
