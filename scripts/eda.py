@@ -7,6 +7,9 @@ import altair as alt
 import numpy as np
 import pandas as pd
 import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from src.correlation_plot import correlation_plot
 
 @click.command()
 @click.option('--clean-data', type=str, help="Path to cleaned data")
@@ -94,29 +97,7 @@ def main(clean_data, plot_to):
     kde_final.save(f"{plot_to}/figures/distributions_of_features.png") 
 
     # create a pairwise correlations plot for the numeric features
-    corr = train_df[numeric_cols].corr().reset_index().melt("index")
-    corr.columns = ["feature_x", "feature_y", "correlation"]
-
-    heatmap = (
-        alt.Chart(corr)
-        .mark_rect()
-        .encode(
-            alt.X("feature_x:N", title="Feature X"),
-            alt.Y("feature_y:N", title="Feature Y"),
-            color=alt.Color(
-                "correlation:Q", scale=alt.Scale(domain=(-1, 1),scheme="purpleorange"),
-                title="Correlation"
-            ),
-            tooltip=["feature_x", "feature_y", "correlation"]
-        )
-        .properties(width=300, height=300, title="Correlation Heatmap")
-    )
-    
-    heatmap = heatmap.properties(
-        title="Correlation Heatmap of Wine Chemical Features"
-    ).configure_title(fontSize=15)
-    
-    heatmap.save(f"{plot_to}/figures/pairwise_correlations.png")
+    correlation_plot(train_df, numeric_cols)
 
 if __name__ == '__main__':
     main()

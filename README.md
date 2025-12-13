@@ -31,43 +31,17 @@ docker compose up
 ```
 3. Several lines will appear. Find the line that begins with `http://127.0.0.1:8888/lab?token=`.
    <img src="imgs/container-launch-url.png" width=800>
-5. Copy and paste the entire line into a browser of your choice.
-6. The notebook will load and be accessible.
-7. Navigate to `notebooks/wine_classifier.ipynb`.
-8. Under the 'Kernel' tab, select the 'Restart Kernel and Run All Cells...'.
-
-### Download data
-Run the following python script in terminal to download data
-```bash
-python ~/scripts/download_data.py
+4. Copy and paste the entire line into a browser of your choice. The project will load and be accessible.
+5. Reset the project by navigating to the root directory using a terminal window within the container.
+6. Run the following command to remove all previously-generated files.
 ```
-
-### Validate, Split and Transform data
-Run the following python script in terminal to validate, split and transform data
-```bash
-python ~/scripts/validate_split_transform.py
+make clean
 ```
-
-### Exploratory Data Analysis Tables and Visualizations
-Run the following python script in terminal to generate tables and visualizations used during exploratory data analysis.
-```bash
-python scripts/eda.py \
-    --clean-data=data/processed/wine-train.csv \
-    --plot-to=results/
+7. Enter the following command to run the analysis in its entirety.
 ```
-
-### Model Analysis
-Run the following python script in terminal to perform model analysis and evaluation.
-```bash
-python scripts/model_analysis.py \
-    --train-features=data/processed/scaled-wine-features-train.csv \
-    --train-target=data/processed/wine-target-train.csv \
-    --test-features=data/processed/scaled-wine-features-test.csv \
-    --test-target=data/processed/wine-target-test.csv \
-    --results-dir=results
-
+make all
 ```
-
+Note: there are additional `make` commands that run portions of the analysis: test, data, eda, analysis, and report.
 
 ### Clean up
 Once the container is no longer needed, it can be shut down.

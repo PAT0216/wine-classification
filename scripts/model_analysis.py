@@ -15,11 +15,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
-from sklearn.dummy import DummyClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
+from src.model_creation import create_classification_models, fit_models
 from sklearn.metrics import (
     confusion_matrix,
     ConfusionMatrixDisplay,
@@ -73,15 +69,9 @@ def main(train_features, train_target, test_features, test_target, results_dir, 
     y_test = pd.read_csv(test_target).squeeze()
 
     # ------------------------------------------------------------------
-    # Define models (same set as in the notebook)
+    # Define models (using modular function from src.model_creation)
     # ------------------------------------------------------------------
-    models = {
-        "dummy": DummyClassifier(random_state=seed),
-        "Decision Tree": DecisionTreeClassifier(random_state=seed),
-        "KNN": KNeighborsClassifier(),
-        "RBF SVM": SVC(random_state=seed),
-        "Logistic Regression": LogisticRegression(max_iter=2000, random_state=seed),
-    }
+    models = create_classification_models(seed=seed)
 
     # ------------------------------------------------------------------
     # 1. Cross-validation results (full table, like in IPYNB)
@@ -101,8 +91,10 @@ def main(train_features, train_target, test_features, test_target, results_dir, 
     print("Evaluating all models on the test set ...")
     test_metrics_dict = {}
 
+    # Fit all models on training data (using modular function)
+    models = fit_models(models, X_train, y_train)
+
     for model_name, model in models.items():
-        model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
 
         acc = accuracy_score(y_test, y_pred)
