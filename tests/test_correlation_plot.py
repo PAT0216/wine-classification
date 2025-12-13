@@ -1,3 +1,5 @@
+# Attribution: the help of ChatGPT was used to cover various test cases and correct for errors.
+
 import pandas as pd
 import os
 import pytest
@@ -5,6 +7,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from src.correlation_plot import correlation_plot
 
+# error cases
 def test_wine_data_not_dataframe_raises_type_error(tmp_path):
     df = [1, 2, 3]  # not a DataFrame
     with pytest.raises(TypeError, match="The wine_data must be a pandas DataFrame"):
@@ -40,6 +43,7 @@ def test_save_to_not_string_raises_type_error(tmp_path):
     with pytest.raises(TypeError, match="save_to must be a string file path"):
         correlation_plot(df, ["a"], save_to=123)
 
+# edge cases
 def test_directory_created_if_missing(tmp_path):
     df = pd.DataFrame({"a": [1,2,3], "b": [2,4,6]})
     output_file = tmp_path / "nested" / "dir" / "plot.png"
@@ -52,6 +56,17 @@ def test_directory_created_if_missing(tmp_path):
     # File should exist
     assert output_file.exists()
 
+def test_single_column_dataframe(tmp_path):
+    """Test that a single-column DataFrame still returns a valid correlation DataFrame."""
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    output_file = tmp_path / "plot.png"
+    corr_df = correlation_plot(df, ["a"], save_to=str(output_file))
+
+    assert list(corr_df.columns) == ["feature_x", "feature_y", "correlation"]
+    assert len(corr_df) == 1  # Only one entry for correlation of the single column
+    assert output_file.exists()
+
+# expected
 def test_everything_works(tmp_path):
     """Test everything works when provided correct information."""
     df = pd.DataFrame({
@@ -67,14 +82,4 @@ def test_everything_works(tmp_path):
     # Check correlation values
     assert corr_df["correlation"].round(6).eq(1.0).all()
     # Check file exists
-    assert output_file.exists()
-
-def test_single_column_dataframe(tmp_path):
-    """Test that a single-column DataFrame still returns a valid correlation DataFrame."""
-    df = pd.DataFrame({"a": [1, 2, 3]})
-    output_file = tmp_path / "plot.png"
-    corr_df = correlation_plot(df, ["a"], save_to=str(output_file))
-
-    assert list(corr_df.columns) == ["feature_x", "feature_y", "correlation"]
-    assert len(corr_df) == 1  # Only one entry for correlation of the single column
     assert output_file.exists()
