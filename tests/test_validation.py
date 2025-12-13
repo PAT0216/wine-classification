@@ -36,7 +36,7 @@ valid_data_as_np = valid_data.copy().to_numpy()
 
 
 def test_valid_data_type():
-    with pytest.raises(TypeError):
+    with pytest.raises(AttributeError):
         validate(valid_data_as_np)
 
 
@@ -55,20 +55,34 @@ def test_empty_data_frame():
 
 invalid_data_cases = []
 
-# Case: missing column
-for col in valid_data.columns:
-    case_missing_col = valid_data.copy().drop(columns=[col])
-    invalid_data_cases.append((case_missing_col, f"Missing column '{col}'"))
+
+# -------------------------------
+# Missing column tests
+# -------------------------------
+@pytest.mark.parametrize("col", valid_data.columns)
+def test_missing_column(col):
+    df_missing = valid_data.drop(columns=[col])
+    with pytest.raises(ValueError, match=f"Missing columns: .*{col}.*"):
+        validate(df_missing)
+
 
 # Case: wrong categorical label
 case_wrong_label = valid_data.copy()
 case_wrong_label.loc[0, "wine_type"] = "pink"
 invalid_data_cases.append((case_wrong_label, "Invalid category in 'wine_type'"))
 
-# Case: missing value in categorical column
-case_missing_cat = valid_data.copy()
-case_missing_cat.loc[0, "wine_type"] = None
-invalid_data_cases.append((case_missing_cat, "Missing value in 'wine_type'"))
+
+# Case: missing value in 'wine_type' column
+case_missing_wine_type = valid_data.copy()
+case_missing_wine_type.loc[0, "wine_type"] = None
+
+
+def test_missing_wine_type():
+    with pytest.raises(
+        ValueError, match="Unexpected missing values found in the dataset"
+    ):
+        validate(case_missing_wine_type)
+
 
 # Case: numeric column out of range (too high)
 numeric_cols = valid_data.select_dtypes(include=np.number).columns
@@ -91,14 +105,32 @@ for col in numeric_cols:
         (case_wrong_type, f"Wrong type in numeric column '{col}'")
     )
 
-# Case: duplicate rows
+# Case: duplicate rows (duplicates are dropped, no error should be raised)
 case_duplicate = pd.concat([valid_data, valid_data.iloc[[0]]], ignore_index=True)
-invalid_data_cases.append((case_duplicate, "Duplicate rows present"))
 
-# Case: entire missing observation
-nan_row = pd.DataFrame([[np.nan] * valid_data.shape[1]], columns=valid_data.columns)
-case_missing_obs = pd.concat([valid_data, nan_row], ignore_index=True)
-invalid_data_cases.append((case_missing_obs, "Row with all missing values"))
+
+def test_duplicates_are_dropped():
+    result = validate(case_duplicate)
+    # duplicate row should be removed
+    assert result.shape[0] == valid_data.shape[0]
+
+
+# Case: entire row of missing values
+case_missing_obs = pd.concat(
+    [
+        valid_data,
+        pd.DataFrame([[np.nan] * valid_data.shape[1]], columns=valid_data.columns),
+    ],
+    ignore_index=True,
+)
+
+
+def test_row_all_nan():
+    with pytest.raises(
+        ValueError, match="Unexpected missing values found in the dataset"
+    ):
+        validate(case_missing_obs)
+
 
 # -------------------------------
 # Parametrized test for invalid data
