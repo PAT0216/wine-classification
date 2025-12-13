@@ -83,7 +83,7 @@ $(RAW_DATA_DIR)/wine-raw.csv:
 $(PROCESSED_DATA_DIR)/scaled-wine-features-train.csv: $(RAW_DATA_DIR)/wine-raw.csv
 	python $(SCRIPTS_DIR)/validate_split_transform.py \
 		--raw-path=$(RAW_DATA_DIR) \
-		--raw-filename=/wine-raw.csv \
+		--raw-filename=wine-raw.csv \
 		--processed-path=$(PROCESSED_DATA_DIR) \
 		--preprocessor-path=$(MODELS_DIR) \
 		--seed=$(SEED)
