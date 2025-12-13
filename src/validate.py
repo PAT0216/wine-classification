@@ -6,15 +6,69 @@ os.environ["DISABLE_PANDERA_IMPORT_WARNING"] = "True"
 
 
 def validate(data):
-    """ Validates raw data
-    - check if data is empty
-    - check for expected columns
-    pandera:
-    - check for missing values
-    - check for correct data type
-    - check for / drop duplicated observations
-    - check for outliers or anonymous values
-    - check for correct category levels
+    """
+    Validate a raw wine dataset for integrity, consistency, and expected ranges.
+
+    The function performs the following checks:
+    1. Ensures the dataset is not empty.
+    2. Checks that all expected columns are present.
+    3. Checks for unexpected missing values.
+    4. Uses a `pandera` DataFrameSchema to validate:
+       - Data types for each column
+       - Value ranges for numerical columns
+       - Allowed categories for categorical columns
+       - Duplicate rows
+       - Entirely empty rows
+
+    If duplicate rows are found, they are dropped and the validation is re-run.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Raw wine dataset containing columns:
+        "fixed_acidity", "volatile_acidity", "citric_acid", "residual_sugar",
+        "chlorides", "free_sulfur_dioxide", "total_sulfur_dioxide", "density",
+        "pH", "sulphates", "alcohol", "wine_type", "target".
+
+    Returns
+    -------
+    pandas.DataFrame
+        The validated DataFrame, with duplicate rows removed if any were present.
+
+    Raises
+    ------
+    ValueError
+        If the dataset is empty, missing expected columns, or contains unexpected missing values.
+    pandera.errors.SchemaErrors
+        If any schema validation checks fail (other than duplicates, which are handled internally).
+
+    Notes
+    -----
+    - Numerical columns are validated to lie within ranges informed by the dataset documentation:
+        - fixed_acidity: 0-20
+        - volatile_acidity: 0-2
+        - citric_acid: 0-2
+        - residual_sugar: 0-100
+        - chlorides: 0-1
+        - free_sulfur_dioxide: 0-500
+        - total_sulfur_dioxide: 0-600
+        - density: 0.8-1.2
+        - pH: 0-6
+        - sulphates: 0-3
+        - alcohol: 5-20
+    - Categorical columns are validated for allowed categories:
+        - wine_type: {'white', 'red'}
+        - target: {0, 1}
+    - Duplicate rows are automatically removed and validation is re-applied.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from validate import validate
+    >>> df = pd.read_csv("wine_data.csv")
+    >>> validated_df = validate(df)
+    >>> validated_df.shape
+    (6497, 13)
     """
     # check if data is empty
     if len(data) == 0:
