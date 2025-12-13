@@ -1,3 +1,20 @@
+"""
+Tests for the wine data preprocessing pipeline.
+
+This module contains pytest-based tests to verify that the preprocessing
+pipeline defined in ``scripts.validate_split_transform`` behaves correctly.
+Specifically, it checks that:
+
+- Raw CSV data can be loaded and processed without errors.
+- All expected output files (processed CSVs and preprocessor pickle)
+  are created in the correct locations.
+- Exported CSV files contain consistent and non-empty data.
+- The saved preprocessor is of the expected type.
+- The utility function ``df`` correctly converts inputs to pandas DataFrames.
+
+These tests rely on pytest fixtures and temporary directories to ensure
+that no real data or filesystem paths are modified during execution.
+"""
 import pytest
 import os
 import pandas as pd
@@ -9,6 +26,24 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 
 @pytest.fixture
 def sample_raw_csv(tmp_path):
+    """
+    Create a temporary raw wine CSV file for testing.
+
+    The fixture generates a small, valid wine dataset containing all required
+    columns and writes it to a temporary directory.
+
+    Parameters
+    ----------
+    tmp_path : pathlib.Path
+        Pytest-provided temporary directory.
+
+    Returns
+    -------
+    tuple of str
+        A tuple containing:
+        - Path to the raw data directory.
+        - Filename of the raw CSV file.
+    """
     raw_dir = tmp_path / "raw"
     raw_dir.mkdir()
     df_raw = pd.DataFrame(
@@ -35,6 +70,19 @@ def sample_raw_csv(tmp_path):
 
 @pytest.fixture
 def processed_dir(tmp_path):
+    """
+    Create a temporary directory for processed CSV outputs.
+
+    Parameters
+    ----------
+    tmp_path : pathlib.Path
+        Pytest-provided temporary directory.
+
+    Returns
+    -------
+    str
+        Path to the processed data directory.
+    """
     d = tmp_path / "processed"
     d.mkdir()
     return str(d)
@@ -42,12 +90,33 @@ def processed_dir(tmp_path):
 
 @pytest.fixture
 def preproc_dir(tmp_path):
+    """
+    Create a temporary directory for the preprocessor.
+
+    Parameters
+    ----------
+    tmp_path : pathlib.Path
+        Pytest-provided temporary directory.
+
+    Returns
+    -------
+    str
+        Path to the preprocessor directory.
+    """
     d = tmp_path / "preprocessor"
     d.mkdir()
     return str(d)
 
 
-def test_pipeline_exports(sample_raw_csv, processed_dir, preproc_dir):
+def test_preprocessing_exports(sample_raw_csv, processed_dir, preproc_dir):
+    """
+    Test that the preprocessing exports all expected files.
+
+    This test runs the preprocessing and verifies that:
+    - All expected CSV files are created.
+    - The preprocessor pickle file exists.
+    - The saved preprocessor is an instance of ``StandardScaler``.
+    """
     raw_dir, raw_filename = sample_raw_csv
     preprocess(raw_dir, raw_filename, processed_dir, preproc_dir, seed=123)
 
@@ -73,7 +142,15 @@ def test_pipeline_exports(sample_raw_csv, processed_dir, preproc_dir):
     assert isinstance(preprocessor, StandardScaler)
 
 
-def test_pipeline_csv_contents(sample_raw_csv, processed_dir, preproc_dir):
+def test_csv_contents(sample_raw_csv, processed_dir, preproc_dir):
+    """
+    Test that exported CSV files contain valid and consistent data.
+
+    This test ensures that:
+    - Feature and target CSV files are not empty.
+    - The number of feature rows matches the number of target rows
+      for both training and test splits.
+    """
     raw_dir, raw_filename = sample_raw_csv
     preprocess(raw_dir, raw_filename, processed_dir, preproc_dir, seed=123)
 
@@ -92,6 +169,14 @@ def test_pipeline_csv_contents(sample_raw_csv, processed_dir, preproc_dir):
 
 
 def test_df_transform():
+    """
+    Test the ``df`` utility function.
+
+    This test verifies that:
+    - List inputs are converted to DataFrames.
+    - Dictionary inputs are converted to DataFrames with correct columns.
+    - DataFrame inputs are returned unchanged.
+    """
     # List input
     df1 = df([1, 2, 3])
     assert isinstance(df1, pd.DataFrame)
