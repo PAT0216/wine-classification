@@ -2,6 +2,7 @@
 import os
 import pandera.pandas as pa
 from pandera.errors import SchemaErrors
+
 os.environ["DISABLE_PANDERA_IMPORT_WARNING"] = "True"
 
 
@@ -76,9 +77,19 @@ def validate(data):
 
     # check for expected columns
     expected_columns = {
-        "fixed_acidity", "volatile_acidity", "citric_acid", "residual_sugar",
-        "chlorides", "free_sulfur_dioxide", "total_sulfur_dioxide", "density",
-        "pH", "sulphates", "alcohol", "wine_type", "target"
+        "fixed_acidity",
+        "volatile_acidity",
+        "citric_acid",
+        "residual_sugar",
+        "chlorides",
+        "free_sulfur_dioxide",
+        "total_sulfur_dioxide",
+        "density",
+        "pH",
+        "sulphates",
+        "alcohol",
+        "wine_type",
+        "target",
     }
     if not expected_columns.issubset(data.columns):
         missing = expected_columns - set(data.columns)
@@ -92,31 +103,38 @@ def validate(data):
     # | error: True
     # the range of checks is determined by referring to the paper related to the dataset
     schema = pa.DataFrameSchema(
-        {   
+        {
             # data type check
-            "fixed_acidity": pa.Column(float, pa.Check.between(0, 20), nullable=True), 
-            "volatile_acidity": pa.Column(float, pa.Check.between(0, 2), nullable=True), 
-            "citric_acid": pa.Column(float, pa.Check.between(0, 2), nullable=True), 
+            "fixed_acidity": pa.Column(float, pa.Check.between(0, 20), nullable=True),
+            "volatile_acidity": pa.Column(float, pa.Check.between(0, 2), nullable=True),
+            "citric_acid": pa.Column(float, pa.Check.between(0, 2), nullable=True),
             "residual_sugar": pa.Column(float, pa.Check.between(0, 100), nullable=True),
-            "chlorides": pa.Column(float, pa.Check.between(0, 1), nullable=True), 
-            "free_sulfur_dioxide": pa.Column(float, pa.Check.between(0, 500), nullable=True), 
-            "total_sulfur_dioxide": pa.Column(float, pa.Check.between(0, 600), nullable=True), 
+            "chlorides": pa.Column(float, pa.Check.between(0, 1), nullable=True),
+            "free_sulfur_dioxide": pa.Column(
+                float, pa.Check.between(0, 500), nullable=True
+            ),
+            "total_sulfur_dioxide": pa.Column(
+                float, pa.Check.between(0, 600), nullable=True
+            ),
             "density": pa.Column(float, pa.Check.between(0.8, 1.2), nullable=True),
-            "pH": pa.Column(float, pa.Check.between(0, 6), nullable=True), 
-            "sulphates": pa.Column(float, pa.Check.between(0, 3), nullable=True), 
-            "alcohol": pa.Column(float, pa.Check.between(5, 20), nullable=True), 
-            
+            "pH": pa.Column(float, pa.Check.between(0, 6), nullable=True),
+            "sulphates": pa.Column(float, pa.Check.between(0, 3), nullable=True),
+            "alcohol": pa.Column(float, pa.Check.between(5, 20), nullable=True),
             # targets should not be nullable
-            "wine_type": pa.Column(str, pa.Check.isin(['white', 'red']), nullable=False), 
-            "target": pa.Column(int, pa.Check.isin([0, 1]), nullable=False)
+            "wine_type": pa.Column(
+                str, pa.Check.isin(["white", "red"]), nullable=False
+            ),
+            "target": pa.Column(int, pa.Check.isin([0, 1]), nullable=False),
         },
         checks=[
             # duplicate observation check
             pa.Check(lambda df: ~df.duplicated().any(), error="Duplicate rows found."),
-            pa.Check(lambda df: ~(df.isna().all(axis=1)).any(), error="Empty rows found.")
-        ]
+            pa.Check(
+                lambda df: ~(df.isna().all(axis=1)).any(), error="Empty rows found."
+            ),
+        ],
     )
-    
+
     try:
         schema.validate(data, lazy=True)
     except SchemaErrors as se:
@@ -127,8 +145,8 @@ def validate(data):
         else:
             # raise other SchemaErrors if it is other issue
             raise se
-    
+
     # # uncomment the print statement below to display test message
     # print("pass all validation")
-    
+
     return data
