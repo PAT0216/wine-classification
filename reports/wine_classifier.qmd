@@ -67,8 +67,9 @@ All models were implemented using the scikit-learn library (@scikit-learn), and 
 
 ```{python}
 #| echo: false
-from IPython.display import Markdown
+import numpy as np
 import pandas as pd
+from IPython.display import Markdown
 ```
 
 # Exploratory Data Analysis
