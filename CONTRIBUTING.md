@@ -26,6 +26,9 @@ There is an automated workflow that will run when new dependencies are added.
 6. The push will trigger a workflow to re-build the Docker image, publish it to Docker Hub, and update the `docker-compose.yml` file with the new image tag. Check this is successful.
 7. Create a Pull Request to merge the changes made on this branch to that of the main branch.
 
+### Running the test suite
+Once the container is up and running, navigate to a terminal window and run the `pytest` command in the root of the project. More details about the test suite can be found in the [`tests`](tests) directory.
+
 ## Code of Conduct
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
