@@ -46,8 +46,7 @@ To prepare for data analysis, we:
 
 We confirmed that the dataset contains no missing values and falls within the expected measurement ranges described in @wine_paper.
 Finally, the data were randomly split into training and test sets.
-```{python}
-```
+
 
 ## Data Validation
 
@@ -69,37 +68,8 @@ All models were implemented using the scikit-learn library (@scikit-learn), and 
 ```{python}
 #| echo: false
 import numpy as np
-from IPython.display import Markdown
-if not hasattr(np, "Inf"):
-    np.Inf = np.inf
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
 import pandas as pd
-import altair as alt
-from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC
-import matplotlib.pyplot as plt
-from sklearn.dummy import DummyClassifier
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.compose import make_column_transformer
-from sklearn.pipeline import Pipeline, make_pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.impute import SimpleImputer
-from sklearn.model_selection import (
-    cross_validate,
-    train_test_split,
-    cross_val_predict
-)
-import os
-import pandera.pandas as pa
-os.environ["DISABLE_PANDERA_IMPORT_WARNING"] = "True"
-from pandera.errors import SchemaErrors
-import deepchecks
-from deepchecks.tabular import Dataset
-from deepchecks.tabular.checks import FeatureLabelCorrelation, FeatureFeatureCorrelation
+from IPython.display import Markdown
 ```
 
 # Exploratory Data Analysis
