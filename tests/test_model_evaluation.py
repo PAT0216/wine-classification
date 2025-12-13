@@ -1,8 +1,10 @@
-
 import pandas as pd
 from sklearn.dummy import DummyClassifier
-from src.model_evaluation import compute_cv_results
 import pytest
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from src.model_evaluation import compute_cv_results
 
 # create simple test data
 X_SMALL = pd.DataFrame({"x1": [0, 1, 0, 1]})
