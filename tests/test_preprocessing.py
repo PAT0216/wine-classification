@@ -1,6 +1,8 @@
 """
 Tests for the wine data preprocessing pipeline.
 
+Attribution: the help of ChatGPT was used to cover various test cases and correct for errors.
+
 This module contains pytest-based tests to verify that the preprocessing
 pipeline defined in ``scripts.validate_split_transform`` behaves correctly.
 Specifically, it checks that:
