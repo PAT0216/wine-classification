@@ -107,7 +107,7 @@ def preproc_dir(tmp_path):
     d.mkdir()
     return str(d)
 
-
+@pytest.mark.filterwarnings("ignore::FutureWarning")
 def test_preprocessing_exports(sample_raw_csv, processed_dir, preproc_dir):
     """
     Test that the preprocessing exports all expected files.
@@ -141,7 +141,7 @@ def test_preprocessing_exports(sample_raw_csv, processed_dir, preproc_dir):
         preprocessor = pickle.load(f)
     assert isinstance(preprocessor, StandardScaler)
 
-
+@pytest.mark.filterwarnings("ignore::FutureWarning")
 def test_csv_contents(sample_raw_csv, processed_dir, preproc_dir):
     """
     Test that exported CSV files contain valid and consistent data.
