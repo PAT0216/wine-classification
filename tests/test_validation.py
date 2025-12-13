@@ -35,7 +35,6 @@ Run all tests:
 $ pytest tests/test_validation.py
 """
 
-
 import pytest
 import os
 import numpy as np
