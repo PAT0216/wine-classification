@@ -5,7 +5,7 @@ Code refers to all the scripts under these folders: scripts, src, notebooks, res
 
 MIT License
 
-Copyright (c) 2025 Prabuddha Tamhane
+Copyright (c) 2025 Prabuddha Tamhane, Harrison Li, Shihan Xu, Wesley Beard 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -161,7 +161,7 @@ Except where otherwise noted, the example programs and other software provided i
 
 MIT License
 
-Copyright (c) 2025 Prabuddha Tamhane
+Copyright (c) 2025 Prabuddha Tamhane, Harrison Li, Shihan Xu, Wesley Beard 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
