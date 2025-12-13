@@ -7,3 +7,4 @@
 .local
 .bash_history
 /.quarto/
+**__pycache__
