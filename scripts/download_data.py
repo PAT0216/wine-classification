@@ -23,9 +23,7 @@ from ucimlrepo import fetch_ucirepo
 @click.command()
 @click.option('--path', type=str, 
               help="Path to directory where raw data will be written to", default='data/raw')
-@click.option('--raw-data-filename', type=str, 
-              help="Filename for the raw dataset CSV", default='wine-raw.csv')
-def main(path, raw_data_filename):
+def main(path):
     """
     Download and save the raw Wine Quality dataset.
 
@@ -36,8 +34,6 @@ def main(path, raw_data_filename):
     ----------
     path : str
         Directory where the raw dataset will be written.
-    raw_data_filename : str
-        Name of the CSV file used to store the raw dataset.
 
     Notes
     -----
@@ -47,12 +43,11 @@ def main(path, raw_data_filename):
     Examples
     --------
     >>> python scripts/download_data.py \ 
-    ...     --path data/raw \ 
-    ...     --raw-data-filename wine-raw.csv
+    ...     --path data/raw
     """
     os.makedirs(path, exist_ok=True)
     wine_raw = fetch_ucirepo(id=186)
-    wine_raw.data.original.to_csv(os.path.join(path, raw_data_filename), index=False)
+    wine_raw.data.original.to_csv(os.path.join(path, "wine-raw.csv"), index=False)
 
 if __name__ == '__main__':
     main()
