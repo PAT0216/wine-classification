@@ -28,11 +28,12 @@ import pandas as pd
 from sklearn import set_config
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+warnings.simplefilter(action="ignore", category=FutureWarning)
+
 import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from src.validate import validate
 
-warnings.simplefilter(action="ignore", category=FutureWarning)
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 
 def df(data):
@@ -79,21 +80,21 @@ def df(data):
 
 
 @click.command()
-@click.option("--raw-path", type=str, help="Path to raw data", default="~/data/raw")
+@click.option("--raw-path", type=str, help="Path to raw data", default="data/raw")
 @click.option(
-    "--raw-filename", type=str, help="Raw data filename", default="/wine-raw.csv"
+    "--raw-filename", type=str, help="Raw data filename", default="wine-raw.csv"
 )
 @click.option(
     "--processed-path",
     type=str,
     help="Path to export processed data",
-    default="~/data/processed",
+    default="data/processed",
 )
 @click.option(
     "--preprocessor-path",
     type=str,
     help="Path to export preprocessor",
-    default="~/results/models",
+    default="results/models",
 )
 @click.option("--seed", type=int, help="Random seed", default=123)
 def main(raw_path, raw_filename, processed_path, preprocessor_path, seed):
@@ -113,13 +114,13 @@ def main(raw_path, raw_filename, processed_path, preprocessor_path, seed):
     Parameters
     ----------
     raw_path : str
-        Path to the folder containing the raw CSV data. Default is '~/data/raw'.
+        Path to the folder containing the raw CSV data. Default is 'data/raw'.
     raw_filename : str
-        Filename of the raw CSV data. Default is '/wine-raw.csv'.
+        Filename of the raw CSV data. Default is 'wine-raw.csv'.
     processed_path : str
-        Path to save processed CSV datasets. Default is '~/data/processed'.
+        Path to save processed CSV datasets. Default is 'data/processed'.
     preprocessor_path : str
-        Path to save the fitted preprocessor object. Default is '~/results/models'.
+        Path to save the fitted preprocessor object. Default is 'results/models'.
     seed : int
         Random seed for reproducibility. Default is 123.
 
@@ -143,10 +144,10 @@ def main(raw_path, raw_filename, processed_path, preprocessor_path, seed):
     Run from command line:
 
     $ python validate_split_transform.py \
-        --raw-path ~/data/raw \
+        --raw-path data/raw \
         --raw-filename wine-raw.csv \
-        --processed-path ~/data/processed \
-        --preprocessor-path ~/results/models \
+        --processed-path data/processed \
+        --preprocessor-path results/models \
         --seed 123
     """
     np.random.seed(seed)
@@ -156,7 +157,7 @@ def main(raw_path, raw_filename, processed_path, preprocessor_path, seed):
     preprocessor_path = os.path.expanduser(preprocessor_path)
 
     # load data
-    data = pd.read_csv(raw_path + raw_filename)
+    data = pd.read_csv(os.path.join(raw_path, raw_filename))
 
     # drop quality if it exists
     # the continuous target quality is not within our scope of interest in the classification model
@@ -175,8 +176,8 @@ def main(raw_path, raw_filename, processed_path, preprocessor_path, seed):
 
     # split data
     train_df, test_df = train_test_split(data, test_size=0.2)
-    train_df.to_csv(processed_path + "/wine-train.csv", index=False)
-    test_df.to_csv(processed_path + "/wine-test.csv", index=False)
+    train_df.to_csv(os.path.join(processed_path, "wine-train.csv"), index=False)
+    test_df.to_csv(os.path.join(processed_path, "wine-test.csv"), index=False)
 
     # preprocessor
     preprocessor = StandardScaler()
@@ -195,10 +196,10 @@ def main(raw_path, raw_filename, processed_path, preprocessor_path, seed):
     X_test = preprocessor.transform(X_test)
 
     # export splitted and transformed feature/targets
-    X_train.to_csv(processed_path + "/scaled-wine-features-train.csv", index=False)
-    X_test.to_csv(processed_path + "/scaled-wine-features-test.csv", index=False)
-    y_train.to_csv(processed_path + "/wine-target-train.csv", index=False)
-    y_test.to_csv(processed_path + "/wine-target-test.csv", index=False)
+    X_train.to_csv(os.path.join(processed_path, "scaled-wine-features-train.csv"), index=False)
+    X_test.to_csv(os.path.join(processed_path, "scaled-wine-features-test.csv"), index=False)
+    y_train.to_csv(os.path.join(processed_path, "wine-target-train.csv"), index=False)
+    y_test.to_csv(os.path.join(processed_path, "wine-target-test.csv"), index=False)
 
 
 if __name__ == "__main__":
